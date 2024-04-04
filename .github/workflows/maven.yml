@@ -6,8 +6,8 @@
 # separate terms of service, privacy policy, and support
 # documentation.
 
-# we can split the "Build and Test" step, in two or more steps, for compiling and running the tests for example
-# the "target" goal on maven implicitly will download dependencies, build classes, run tests, and package classes
+# we can build and run tests in a single step or do it in multiple steps...
+# the "package" phase on maven implicitly will download dependencies, build classes, run unit tests, and package classes
 
 name: CI with Maven
 
@@ -16,21 +16,36 @@ on:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
+  workflow_dispatch:
 
 jobs:
   build:
 
     runs-on: ubuntu-latest
-
+    strategy:
+      matrix:
+        java: [ '17', '21' ]
+        
     steps:
     - uses: actions/checkout@v4
-    - name: Set up JDK 17
+      with:
+        fetch-depth: 0    
+    - name: Set up JDK
       uses: actions/setup-java@v4
       with:
-        java-version: '17'
+        java-version: ${{ matrix.java }}
         distribution: 'temurin'
         cache: maven
-    - name: Build and Test
+    - name: Build and run unit tests
       run: mvn -B package --file pom.xml
-
-  
+    - name: Run integration tests
+      run: mvn -B failsafe:integration-test --file pom.xml
+    - name: Push results to Xray on Jira Cloud
+      if: always()
+      env:
+        XRAYCLOUD_CLIENT_ID: ${{ secrets.XRAYCLOUD_CLIENT_ID }}
+        XRAYCLOUD_CLIENT_SECRET: ${{ secrets.XRAYCLOUD_CLIENT_SECRET }}
+        XRAYCLOUD_TEST_PLAN_KEY: ${{ secrets.XRAYCLOUD_TEST_PLAN_KEY }}
+        REVISON: ${{ github.ref_name}}
+        TEST_ENVIRONMENT: java${{ matrix.java }}
+      run: mvn -Dxray.clientId=${{ env.XRAYCLOUD_CLIENT_ID }} -Dxray.clientSecret=${{ env.XRAYCLOUD_CLIENT_SECRET }} -Dxray.testEnvironment=${{ env.TEST_ENVIRONMENT }} -Dxray.testPlanKey=${{ env.XRAYCLOUD_TEST_PLAN_KEY }} -Dxray.revision=${{ env.REVISON }} xray:import-results  
