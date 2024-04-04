@@ -30,7 +30,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 */
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @AutoConfigureTestDatabase
-@Requirement("ST-2")
 class UserRestControllerIT {
 
     @LocalServerPort
@@ -51,7 +50,8 @@ class UserRestControllerIT {
     }
 
     @Test
-     void createUserWithSuccess() {
+    @Requirement("ST-2")
+    void createUserWithSuccess() {
         User john = new User("John Doe", "johndoe", "dummypassword");
         ResponseEntity<User> entity = restTemplate.postForEntity("/api/users", john, User.class);
 
@@ -60,7 +60,8 @@ class UserRestControllerIT {
     }
 
     @Test
-     void dontCreateUserForInvalidData() {
+    @Requirement("ST-2")
+    void dontCreateUserForInvalidData() {
         User john = new User("John Doe", "", "dummypassword");
         ResponseEntity<User> response = restTemplate.postForEntity("/api/users", john, User.class);
  
@@ -73,6 +74,7 @@ class UserRestControllerIT {
     }
 
     @Test
+    @Requirement("ST-2")
     void getUserWithSuccess() {
         String endpoint = UriComponentsBuilder.newInstance()
                 .scheme("http")
@@ -91,6 +93,7 @@ class UserRestControllerIT {
     }
 
     @Test
+    @Requirement("ST-2")
     void getUserUnsuccess() throws JSONException {
         ResponseEntity<JSONObject> response = restTemplate.exchange("/api/user/-1", HttpMethod.GET, null, new ParameterizedTypeReference<JSONObject>() {
         });
@@ -100,7 +103,8 @@ class UserRestControllerIT {
     
 
     @Test
-     void listAllUsersWithSuccess()  {
+    @Requirement("ST-2")
+    void listAllUsersWithSuccess()  {
         createTempUser("Amanda James", "amanda", "dummypassword");
         createTempUser("Robert Junior", "robert", "dummypassword");
 
@@ -113,6 +117,7 @@ class UserRestControllerIT {
     }
 
     @Test
+    @Requirement("ST-2")
     void deleteUserWithSuccess() {
         ResponseEntity<User> response = restTemplate.exchange("/api/users/" + user1.getId(), HttpMethod.DELETE, null, User.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -123,6 +128,7 @@ class UserRestControllerIT {
     }
 
     @Test
+    @Requirement("ST-2")
     void deleteUserUnsuccess() {
         ResponseEntity<User> response = restTemplate.exchange("/api/users/" + (user1.getId()+2), HttpMethod.DELETE, null, User.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
