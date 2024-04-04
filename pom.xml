@@ -19,6 +19,8 @@
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
 		<junit-jupiter.version>5.10.2</junit-jupiter.version>
+		<xray-junit-extensions.version>0.7.3</xray-junit-extensions.version>
+		<xray-maven-plugin.version>0.7.4</xray-maven-plugin.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -79,9 +81,14 @@
         <dependency>
 			<groupId>app.getxray</groupId>
 			<artifactId>xray-junit-extensions</artifactId>
-			<version>0.7.1</version>
+			<version>${xray-junit-extensions.version}</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+            <groupId>app.getxray</groupId>
+            <artifactId>xray-maven-plugin</artifactId>
+            <version>${xray-maven-plugin.version}</version>
+        </dependency>
 	</dependencies>
 
 	<build>
@@ -91,6 +98,17 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
 
+            <plugin>
+                <groupId>app.getxray</groupId>
+                <artifactId>xray-maven-plugin</artifactId>
+                <version>${xray-maven-plugin.version}</version>
+                <configuration>
+                    <cloud>true</cloud>
+                    <projectKey>ST</projectKey>
+                    <reportFormat>junit</reportFormat>
+                    <reportFile>reports/TEST-junit-jupiter.xml</reportFile>
+                </configuration>
+            </plugin>
 		</plugins>
 	</build>
 

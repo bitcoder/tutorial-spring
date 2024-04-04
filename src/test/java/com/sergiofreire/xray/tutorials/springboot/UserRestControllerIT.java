@@ -18,6 +18,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 import com.sergiofreire.xray.tutorials.springboot.data.User;
 import com.sergiofreire.xray.tutorials.springboot.data.UserRepository;
 
+import app.getxray.xray.junit.customjunitxml.annotations.Requirement;
+
 import org.springframework.boot.test.web.server.LocalServerPort;
 
 import java.util.List;
@@ -28,6 +30,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 */
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @AutoConfigureTestDatabase
+@Requirement("ST-2")
 class UserRestControllerIT {
 
     @LocalServerPort
@@ -89,17 +92,6 @@ class UserRestControllerIT {
 
     @Test
     void getUserUnsuccess() throws JSONException {
-        /*
-        String endpoint = UriComponentsBuilder.newInstance()
-                .scheme("http")
-                .host("127.0.0.1")
-                .port(randomServerPort)
-                .pathSegment("api", "users", "-1" )
-                .build()
-                .toUriString();
-
-        */
-
         ResponseEntity<JSONObject> response = restTemplate.exchange("/api/user/-1", HttpMethod.GET, null, new ParameterizedTypeReference<JSONObject>() {
         });
 

@@ -13,7 +13,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import com.sergiofreire.xray.tutorials.springboot.boundary.IndexController;
 
 import app.getxray.xray.junit.customjunitxml.annotations.Requirement;
-import app.getxray.xray.junit.customjunitxml.annotations.XrayTest;
 
 // @SpringBootTest
 // @AutoConfigureMockMvc; it is implied whenever @WebMvcTest is used
@@ -27,10 +26,7 @@ public class IndexControllerMockedIT {
 	private MockMvc mvc;
 
 	@Test
-	@XrayTest(key = "XT-676")
-	@Requirement("XT-675")
-	//@XrayTest(key = "XT-438")
-//	@Requirement("XT-437")
+	@Requirement("ST-1")
 	public void getWelcomeMessage() throws Exception {
 		mvc.perform(MockMvcRequestBuilders.get("/").accept(MediaType.TEXT_PLAIN))
 				.andExpect(status().isOk())
