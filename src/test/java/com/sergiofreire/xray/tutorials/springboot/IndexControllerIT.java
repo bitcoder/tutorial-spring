@@ -9,13 +9,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 /* load the full application */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class IndexControllerIT {
+class IndexControllerIT {
 
 	@Autowired
 	private TestRestTemplate template;
 
     @Test
-    public void getWelcomeMessage() throws Exception {
+    void getWelcomeMessage() throws Exception {
         ResponseEntity<String> response = template.getForEntity("/", String.class);
 
         assertThat(response.getBody()).isEqualTo("Welcome to this amazing website!");

@@ -16,23 +16,21 @@ import com.sergiofreire.xray.tutorials.springboot.boundary.GreetingController;
 // @AutoConfigureMockMvc; it is implied whenever @WebMvcTest is used
 
 @WebMvcTest(GreetingController.class)
-public class GreetingControllerMockedIT {
+class GreetingControllerMockedIT {
 
 	@Autowired
 	private MockMvc mvc;
 
 	@Test
-	public void getDefaultGreeting() throws Exception {
+	void getDefaultGreeting() throws Exception {
 		mvc.perform(MockMvcRequestBuilders.get("/greeting").accept(MediaType.TEXT_PLAIN))
 				.andExpect(status().isOk())
 				.andExpect(content().string(containsString("Hello, World!")));
 	}
 
 	@Test
-	public void getPersonalizedGreeting() throws Exception {
-		// perform get request and pass name parameter on the mvc object
+	void getPersonalizedGreeting() throws Exception {
 		mvc.perform(
-				// MockMvcRequestBuilders.get("/greeting?name=John").accept(MediaType.TEXT_PLAIN))
 				MockMvcRequestBuilders.get("/greeting").param("name", "John").accept(MediaType.TEXT_PLAIN))
 				.andExpect(status().isOk())
 				.andExpect(content().string(containsString("Hello, John!")));

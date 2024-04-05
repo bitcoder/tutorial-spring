@@ -16,13 +16,7 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
 
     public Optional<User> getUserDetails(Long id) {
-        // return optional of found user or return an empty Optional if not found
-        Optional<User> user = userRepository.findById(id);
-        if (user == null) {
-            return Optional.empty();
-        } else {
-            return user;
-        }
+        return userRepository.findById(id);
     }
 
     @Override
@@ -32,10 +26,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean exists(String username) {
-        if (userRepository.findByUsername(username) != null) {
-            return true;
-        }
-        return false;
+        return userRepository.findByUsername(username) != null;
     }
 
     @Override
