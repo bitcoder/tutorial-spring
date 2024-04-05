@@ -39,7 +39,7 @@ jobs:
     - name: Build and run unit tests
       run: mvn -B package --file pom.xml
     - name: Run integration tests
-      run: mvn -B failsafe:integration-test --file pom.xml
+      run: mvn -B failsafe:integration-test failsafe:verify --file pom.xml
     - name: Push results to Xray on Jira Cloud
       if: always()
       env:
