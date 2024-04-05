@@ -20,14 +20,14 @@ import app.getxray.xray.junit.customjunitxml.annotations.Requirement;
 // @WebMvcTest annotation is used to test only the web layer of the application
 // It disables full auto-configuration and instead apply only configuration relevant to MVC tests
 @WebMvcTest(IndexController.class)
-public class IndexControllerMockedIT {
+class IndexControllerMockedIT {
 
 	@Autowired
 	private MockMvc mvc;
 
 	@Test
 	@Requirement("ST-1")
-	public void getWelcomeMessage() throws Exception {
+	void getWelcomeMessage() throws Exception {
 		mvc.perform(MockMvcRequestBuilders.get("/").accept(MediaType.TEXT_PLAIN))
 				.andExpect(status().isOk())
 				.andExpect(content().string(equalTo("Welcome to this amazing website!")));

@@ -89,7 +89,7 @@ class UserRestControllerIT {
         User user = response.getBody();
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(user1.equals(user)).isTrue();
+        assertThat(user1).isEqualTo(user);
     }
 
     @Test

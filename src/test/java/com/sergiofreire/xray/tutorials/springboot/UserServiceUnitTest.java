@@ -46,7 +46,7 @@ class UserServiceUnitTest {
  
         Mockito.when(userRepository.findById(john.getId())).thenReturn(Optional.of(john));
         Mockito.when(userRepository.findAll()).thenReturn(allUsers);
-        Mockito.when(userRepository.findById(-99L)).thenReturn(null);
+        Mockito.when(userRepository.findById(-99L)).thenReturn(Optional.empty());
     }
 
     @Test
