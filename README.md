@@ -1,6 +1,11 @@
 # Spring tutorial
 
-This is a simple Spring Boot tutorial to showcase the CI flow.
+This is a simple Spring Boot tutorial to showcase the CI flow:
+
+- make local changes & push them
+- CI tool runs build
+- CI tool runs tests
+- merge
 
 
 ## Testing
@@ -42,7 +47,7 @@ The testing results are pushed to Xray, a test management tool, in Jira; only th
 
 - test automation results will be tracked on a Test Plan issue
 - automated test entities will be provisioned on Jira/Xray, if they don't exist yet
-- (some) automated test are linked automatically to existing stories, if they're annotated with `@Requirement(<story_issue_key>)`; that requires using the [xray-junit-extensions](https://github.com/Xray-App/xray-junit-extensions) dependency
+- (some) automated test are linked automatically to existing stories, if they're annotated with `@Requirement(<story_issue_key>)` ([example](https://github.com/bitcoder/tutorial-spring/blob/2f0f43779c5f207409600997eb1d1320413e76b3/src/test/java/com/sergiofreire/xray/tutorials/springboot/IndexControllerMockedIT.java#L29)); that requires using the [xray-junit-extensions](https://github.com/Xray-App/xray-junit-extensions) dependency
 
 To push the results to Jira, a maven plugin [xray-maven-plugin](https://github.com/Xray-App/xray-maven-plugin) is used; an alternative to that would be to use the GH action [xray-action](https://github.com/mikepenz/xray-action) instead.
 
