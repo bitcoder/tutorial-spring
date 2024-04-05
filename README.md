@@ -7,6 +7,7 @@ This is a simple Spring Boot tutorial to showcase the CI flow:
 - CI tool runs tests
 - merge
 
+This tutorial also pushes the results to Jira; the results are visible and its impacts can be tracked in Jira using a test management tool called Xray; this integration is optional but is shown as an example of how CI related results can be tracked elsewhere, including in the popular Jira issue tracker.
 
 ## Testing
 
@@ -43,7 +44,7 @@ This project is integrated with [SonarCloud](https://sonarcloud.io/project/overv
 
 ## Jira (using Xray Test Management)
 
-The testing results are pushed to Xray, a test management tool, in Jira; only the integration tests are pushed.
+The testing results are pushed to [Xray](https://www.getxray.app/), a test management tool, in Jira; only the integration tests are pushed.
 
 - test automation results will be tracked on a Test Plan issue
 - automated test entities will be provisioned on Jira/Xray, if they don't exist yet
