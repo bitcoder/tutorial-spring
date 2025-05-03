@@ -54,3 +54,8 @@ jobs:
         echo "| Link |" >> $GITHUB_STEP_SUMMARY
         echo "| --- |" >> $GITHUB_STEP_SUMMARY
         echo "| Test Plan: [${{ vars.XRAYCLOUD_TEST_PLAN_KEY }}](${{ vars.JIRACLOUD_BASE_URL }}/browse/${{ vars.XRAYCLOUD_TEST_PLAN_KEY }}) | " >> $GITHUB_STEP_SUMMARY
+    - uses: mshick/add-pr-comment@v2
+      with:
+        message: |
+          Test Plan: [${{ vars.XRAYCLOUD_TEST_PLAN_KEY }}](${{ vars.JIRACLOUD_BASE_URL }}/browse/${{ vars.XRAYCLOUD_TEST_PLAN_KEY }}) 
+  
