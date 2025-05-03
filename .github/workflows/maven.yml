@@ -41,10 +41,13 @@ jobs:
       run: mvn -B package --file pom.xml
     - name: Run integration tests
       run: mvn -B integration-test verify --file pom.xml
+    - uses: 8BitJonny/gh-get-current-pr@3.0.0
+      id: PR
     - name: Add code coverage information to PR
       id: jacoco-pr
       uses: madrapps/jacoco-report@v1.7.1
-      if: github.event_name == 'pull_request'
+      # the condition following doesnt handle updates/pushes on PRs: github.event_name == 'pull_request'
+      if: steps.PR.outputs.pr_found == 'true'
       with:
         paths: |
           ${{ github.workspace }}/**/target/site/jacoco-merged-test-coverage-report/jacoco.xml 
