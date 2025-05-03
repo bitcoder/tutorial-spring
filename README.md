@@ -1,5 +1,10 @@
 # Spring tutorial
 
+[![build workflow](https://github.com/bitcoder/tutorial-spring/actions/workflows/maven.yml/badge.svg)](https://github.com/bitcoder/tutorial-spring/actions/workflows/maven.yml)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=bitcoder_tutorial-spring&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=bitcoder_tutorial-spring)
+[![Jira](https://img.shields.io/badge/jira-%230A0FFF.svg?style=for-the-badge&logo=jira&logoColor=white)](https://sergiofreire.atlassian.net/browse/ST)
+
+
 This is a simple Spring Boot tutorial to showcase the CI flow:
 
 - make local changes & push them
