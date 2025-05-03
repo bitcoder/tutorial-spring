@@ -25,13 +25,13 @@ mvn test
 ```
 
 ```bash
-mvn failsafe:integration-test
+mvn integration-test
 ```
 
-If we want to fail the build whenever running the IT, we can execute the maven target `failsafe:verify" after running the IT.
+If we want to fail the build whenever running the IT, we can execute the maven target `failsafe:verify` or just `verify` after running the IT.
 
 ```bash
-mvn failsafe:integration-test failsafe:verify
+mvn integration-test verify
 ```
 
 ## CI
@@ -55,7 +55,7 @@ The testing results are pushed to [Xray](https://www.getxray.app/), a test manag
 - automated test entities will be provisioned on Jira/Xray, if they don't exist yet
 - (some) automated test are linked automatically to existing stories, if they're annotated with `@Requirement(<story_issue_key>)` ([example](https://github.com/bitcoder/tutorial-spring/blob/2f0f43779c5f207409600997eb1d1320413e76b3/src/test/java/com/sergiofreire/xray/tutorials/springboot/IndexControllerMockedIT.java#L29)); that requires using the [xray-junit-extensions](https://github.com/Xray-App/xray-junit-extensions) dependency
 
-To push the results to Jira, a maven plugin [xray-maven-plugin](https://github.com/Xray-App/xray-maven-plugin) is used; an alternative to that would be to use the GH action [xray-action](https://github.com/mikepenz/xray-action) instead.
+To push the results to Jira, a maven plugin [xray-maven-plugin](https://github.com/Xray-App/xray-maven-plugin) is used; an alternative to that would be to use the GH action [xray-action](https://github.com/mikepenz/xray-action) instead. You choose :)
 
 ## Contact
 

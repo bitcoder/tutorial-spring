@@ -39,7 +39,7 @@ jobs:
     - name: Build and run unit tests
       run: mvn -B package --file pom.xml
     - name: Run integration tests
-      run: mvn -B failsafe:integration-test failsafe:verify --file pom.xml
+      run: mvn -B integration-test verify --file pom.xml
     - name: Add code coverage information to PR
       id: jacoco-pr
       uses: madrapps/jacoco-report@v1.7.1
