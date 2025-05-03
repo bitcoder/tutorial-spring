@@ -25,7 +25,9 @@ jobs:
     strategy:
       matrix:
         java: [ '17', '21' ]
-        
+    permissions:
+      pull-requests: write
+
     steps:
     - uses: actions/checkout@v4
       with:
