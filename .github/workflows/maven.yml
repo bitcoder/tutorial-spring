@@ -41,6 +41,36 @@ jobs:
       run: mvn -B package --file pom.xml
     - name: Run integration tests
       run: mvn -B integration-test verify --file pom.xml
+    - name: add event info
+      run: |
+        echo "event: ${{ github.event }}"
+        echo "event_name ${{ github.event_name }}"
+        echo "event_path ${{ github.event_path }}"
+        echo "base_ref ${{ github.base_ref }}"
+        echo "head_ref ${{ github.head_ref }}"
+        echo "ref ${{ github.ref }}"
+        echo "ref_name ${{ github.ref_name }}"
+        echo "ref_type ${{ github.ref_type }}"
+        echo "actor ${{ github.actor }}"
+        echo "triggering_actor ${{ github.triggering_actor }}"
+    - uses: 8BitJonny/gh-get-current-pr@3.0.0
+      id: PR
+    - run: echo "PR ${prNumber} ${prTitle} at ${prUrl} is ${prJSON}"
+      env:
+        # JSON object with the full PR object
+        # toJSON(fromJSON(...pr)) parses it into memory and then format is with pretty-print.
+        #prJSON: ${{ toJSON(fromJSON(steps.PR.outputs.pr)) }}
+        # Direct access to common PR properties
+        #prNumber: ${{ steps.PR.outputs.number }}
+        #prUrl: ${{ steps.PR.outputs.pr_url }}
+        #prTitle: ${{ steps.PR.outputs.pr_title }}
+        #prBody: ${{ steps.PR.outputs.pr_body }}
+        #prCreatedAt: ${{ steps.PR.outputs.pr_created_at }}
+        #prMergedAt: ${{ steps.PR.outputs.pr_merged_at }}
+        #prClosedAt: ${{ steps.PR.outputs.pr_closed_at }}
+        #prLabel: ${{ steps.PR.outputs.pr_labels }}
+        #prFound: ${{ steps.PR.outputs.pr_found }}
+        prOutputs: ${{ steps.PR.outputs.pr }}
     - name: Add code coverage information to PR
       id: jacoco-pr
       uses: madrapps/jacoco-report@v1.7.1
