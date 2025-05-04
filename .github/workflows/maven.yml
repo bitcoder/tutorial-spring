@@ -21,7 +21,8 @@ on:
 
 jobs:
   build:
-
+    permissions:
+      pull-requests: write
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -55,7 +56,7 @@ jobs:
         echo "triggering_actor ${{ github.triggering_actor }}"
     - uses: 8BitJonny/gh-get-current-pr@3.0.0
       id: PR
-    - run: echo "PR ${prNumber} ${prTitle} at ${prUrl} is ${prJSON}"
+    - run: echo "PR ${prOutputs}"
       env:
         # JSON object with the full PR object
         # toJSON(fromJSON(...pr)) parses it into memory and then format is with pretty-print.
@@ -70,7 +71,7 @@ jobs:
         #prClosedAt: ${{ steps.PR.outputs.pr_closed_at }}
         #prLabel: ${{ steps.PR.outputs.pr_labels }}
         #prFound: ${{ steps.PR.outputs.pr_found }}
-        prOutputs: ${{ steps.PR.outputs.pr }}
+        prOutputs: ${{ steps.PR.outputs }}
     - name: Add code coverage information to PR
       id: jacoco-pr
       uses: madrapps/jacoco-report@v1.7.1
