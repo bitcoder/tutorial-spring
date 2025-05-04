@@ -50,7 +50,7 @@ class UserRepositoryTest {
     }
 
     @Test
-    void findByUsernameReturnsNullWhenInvalidUsernmae() {
+    void findByUsernameReturnsNullWhenInvalidUsername() {
         User user = userRepository.findByUsername("missinguser");
         assertThat(user).isNull();
     }
