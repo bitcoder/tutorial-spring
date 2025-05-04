@@ -1,8 +1,21 @@
-# Use a base image with Java
-FROM eclipse-temurin:17-jdk-alpine
+# Use an official Maven image as the base image
+FROM maven:3.8.4-openjdk-17-slim AS build
+# Set the working directory in the container
+WORKDIR /app
 
-# Copy the built jar file into the image
-COPY target/springboot-0.0.1-SNAPSHOT.jar app.jar
+COPY pom.xml .
+COPY src ./src
+
+# Build the application using Maven
+RUN mvn clean package
+
+# Use an official OpenJDK image as the base image
+FROM openjdk:11-ea-17-jre-slim
+# Set the working directory in the container
+WORKDIR /app
+
+# Copy the built JAR file from the previous stage to the container
+COPY --from=build /app/target/springboot-0.0.1-SNAPSHOT.jar app.jar
 
 # Set the entry point to run your application
 ENTRYPOINT ["java","-jar","/app.jar"]
