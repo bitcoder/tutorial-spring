@@ -71,7 +71,7 @@ jobs:
         #prClosedAt: ${{ steps.PR.outputs.pr_closed_at }}
         #prLabel: ${{ steps.PR.outputs.pr_labels }}
         #prFound: ${{ steps.PR.outputs.pr_found }}
-        prOutputs: ${{ steps.PR.outputs }}
+        prOutputs: ${{ steps.PR.outputs.pr_found }}
     - name: Add code coverage information to PR
       id: jacoco-pr
       uses: madrapps/jacoco-report@v1.7.1
