@@ -40,6 +40,20 @@ class UserRepositoryTest {
         assertThat(fromDb).isEmpty();
     }
 
+    @Test
+    void findByUsernameReturnsUserForValidUsername() {
+        User john = new User("John Doe", "johndoe", "dummypassword");
+        entityManager.persistAndFlush(john);
+
+        User user = userRepository.findByUsername("johndoe");
+        assertThat(user).isEqualTo(john);
+    }
+
+    @Test
+    void findByUsernameReturnsNullWhenInvalidUsernmae() {
+        User user = userRepository.findByUsername("missinguser");
+        assertThat(user).isNull();
+    }
 
     @Test
     void findAllReturnsAllUsers() {
