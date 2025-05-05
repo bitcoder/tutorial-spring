@@ -36,12 +36,12 @@ mvn integration-test verify
 
 ## CI
 
-CI is implemented using GH actions, on a [worflow](./.github/workflows/maven.yml) that is triggered:
+CI is implemented using GH actions, on a [workflow](https://github.com/bitcoder/tutorial-spring/blob/main/.github/workflows/maven.yml) that is triggered:
 
 - on the main branch
 - on PRs (pull-requests)
 
-We can also trigger the workflow/build on demand, right from the [Actions page](actions/workflows/maven.yml).
+We can also trigger the workflow/build on demand, right from the [Actions page](https://github.com/bitcoder/tutorial-spring/actions/workflows/maven.yml).
 
 ## SonarCloud
 
