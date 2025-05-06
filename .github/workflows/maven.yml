@@ -79,6 +79,19 @@ jobs:
           deployment_environment: 'staging'
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
+  k6-check:
+    runs-on: ubuntu-latest
+    needs: deploy-staging
+    steps:
+      - uses: actions/checkout@v2
+      - uses: grafana/setup-k6-action@v1
+      - uses: grafana/run-k6-action@v1
+        env:
+          K6_API_URL: ${{ vars.STAGING_URL }}
+        with:
+          path: |
+            ./src/test/k6/*.js
+
   lighthouse-check:
     needs: deploy-staging
     runs-on: ubuntu-latest
