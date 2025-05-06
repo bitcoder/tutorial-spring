@@ -85,6 +85,7 @@ jobs:
     permissions:
       pull-requests: write
     steps:
+      - run: mkdir /tmp/artifacts
       - name: Run Lighthouse
         uses: foo-software/lighthouse-check-action@master
         id: lighthouseCheck
