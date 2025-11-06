@@ -16,7 +16,7 @@ This tutorial also pushes the results to Jira; the results are visible and its i
 
 ## Testing
 
-This project contains unit and integration tests.
+This project contains unit and integration tests. 
 Unit tests are run using `surefire`, while integration tests can be run using `failsafe` maven plugin.
 
 
@@ -62,6 +62,6 @@ To push the results to Jira, a maven plugin [xray-maven-plugin](https://github.c
 If you're having the TQS classes, you can reach out using my email account at sergio dot freire (you know the rest).
 
 Any questions related with this code, please raise issues in this GitHub project. Feel free to contribute and submit PR's
-You may also find me on [Twitter](https://twitter.com/darktelecom), where I write once in a while about testing (don't use that for TQS class related topics though).
+You may also find me on [X](https://x.com/darktelecom), where I write once in a while about testing (don't use that for TQS class related topics though).
  
 
