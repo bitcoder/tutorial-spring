@@ -9,8 +9,8 @@ COPY src ./src
 # Build the application using Maven
 RUN mvn clean package
 
-# Use an official OpenJDK image as the base image
-FROM openjdk:21-slim
+# Use a JDK image as the base image
+FROM ibm-semeru-runtimes:open-17-jre-noble
 # Set the working directory in the container
 WORKDIR /app
 
