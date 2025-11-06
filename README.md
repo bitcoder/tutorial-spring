@@ -16,7 +16,7 @@ This tutorial also pushes the results to Jira; the results are visible and its i
 
 ## Testing
 
-This project contains unit and integration tests.
+This project contains unit and integration tests. 
 Unit tests are run using `surefire`, while integration tests can be run using `failsafe` maven plugin.
 
 
