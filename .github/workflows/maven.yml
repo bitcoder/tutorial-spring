@@ -37,10 +37,13 @@ jobs:
         java-version: ${{ matrix.java }}
         distribution: 'temurin'
         cache: maven
-    - name: Run unit and integration tests, and Sonar analysis
-      run: mvn test failsafe:integration-test verify sonar:sonar -Dsonar.projectKey=tutorial-spring -Dsonar.organization=bitcoder -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$SONAR_TOKEN
+    - name: Run unit and integration tests
+      run: mvn test failsafe:integration-test verify
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    - name: SonarQube Scan
+      uses: SonarSource/sonarqube-scan-action@v6.0.0
+      env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
     - name: Add code coverage information to PR
       id: jacoco-pr
