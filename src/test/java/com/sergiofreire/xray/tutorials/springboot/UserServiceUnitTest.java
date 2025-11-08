@@ -35,7 +35,7 @@ class UserServiceUnitTest {
     private UserServiceImpl userService;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         User john = new User("John Doe", "johndoe", "dummypassword");
         john.setId(999L);
         User amanda = new User("Amanda James", "amanda", "dummypassword");
