@@ -16,7 +16,7 @@ class IndexControllerIT {
 	private TestRestTemplate template;
 
     @Test
-    void getWelcomeMessage() throws Exception {
+    void getWelcomeMessage() {
         ResponseEntity<String> response = template.getForEntity("/", String.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
