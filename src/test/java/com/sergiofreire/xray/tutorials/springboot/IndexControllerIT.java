@@ -4,6 +4,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -18,6 +20,8 @@ class IndexControllerIT {
     void getWelcomeMessage() throws Exception {
         ResponseEntity<String> response = template.getForEntity("/", String.class);
 
-        assertThat(response.getBody()).isEqualTo("Welcome to this amazing website!");
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getHeaders().getContentType()).isEqualTo(MediaType.TEXT_HTML);
+        assertThat(response.getBody()).contains("Welcome to this amazing website!");
     }
 }
