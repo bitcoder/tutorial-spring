@@ -16,7 +16,7 @@ This tutorial also pushes the results to Jira; the results are visible and its i
 
 ## Testing
 
-This project contains unit and integration tests.
+This project contains unit and integration tests. 
 Unit tests are run using `surefire`, while integration tests can be run using `failsafe` maven plugin.
 
 
@@ -34,7 +34,7 @@ If we want to fail the build whenever running the IT, we can execute the maven t
 mvn integration-test verify
 ```
 
-## CI
+## CI and CD
 
 CI is implemented using GH actions, on a [workflow](https://github.com/bitcoder/tutorial-spring/blob/main/.github/workflows/maven.yml) that is triggered:
 
@@ -43,9 +43,22 @@ CI is implemented using GH actions, on a [workflow](https://github.com/bitcoder/
 
 We can also trigger the workflow/build on demand, right from the [Actions page](https://github.com/bitcoder/tutorial-spring/actions/workflows/maven.yml).
 
+Commits on `main` branch will deploy to production.
+
 ## SonarCloud
 
 This project is integrated with [SonarCloud](https://sonarcloud.io/project/overview?id=bitcoder_tutorial-spring), and PRs will have information about code quality.
+
+## Environments
+
+The Spring Boot app is deployed to:
+- *production*, upon a commit on the `main` branch
+- *staging*, upon a PR (Pull Request); this is only showcased on the `lh_tests_on_staging` branch and corresponding PR as an example; this hasn't been merged just for demo purpose and also because it would make the PR demo a bit slower to show.
+
+We're using Render.com to host the app; upon a trigger, Render will start a build (based on a Dockerfile) and deploy the app.
+
+- The production site is available at: https://tutorial-spring.onrender.com
+- The staging site is available at: https://tutorial-spring-staging.onrender.com
 
 ## Jira (using Xray Test Management)
 
@@ -62,6 +75,6 @@ To push the results to Jira, a maven plugin [xray-maven-plugin](https://github.c
 If you're having the TQS classes, you can reach out using my email account at sergio dot freire (you know the rest).
 
 Any questions related with this code, please raise issues in this GitHub project. Feel free to contribute and submit PR's
-You may also find me on [Twitter](https://twitter.com/darktelecom), where I write once in a while about testing (don't use that for TQS class related topics though).
+You may also find me on [X](https://x.com/darktelecom), where I write once in a while about testing (don't use that for TQS class related topics though).
  
 

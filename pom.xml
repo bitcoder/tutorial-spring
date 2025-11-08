@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.2.2</version>
+		<version>3.5.7</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.sergiofreire.xray.tutorials</groupId>
@@ -19,12 +19,12 @@
 		<!-- the following lines were needed because for vscode -->
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
-		<junit-jupiter.version>5.10.2</junit-jupiter.version>
-		<xray-junit-extensions.version>0.7.3</xray-junit-extensions.version>
-		<xray-maven-plugin.version>0.8.0</xray-maven-plugin.version>
-		<maven-failsafe-plugin.version>3.2.5</maven-failsafe-plugin.version>
-		<maven-surefire-plugin.version>3.2.5</maven-surefire-plugin.version>
-		<jacoco.version>0.8.13</jacoco.version>
+		<junit-jupiter.version>5.14.1</junit-jupiter.version>
+		<xray-junit-extensions.version>0.9.0</xray-junit-extensions.version>
+		<xray-maven-plugin.version>0.9.0</xray-maven-plugin.version>
+		<maven-failsafe-plugin.version>3.5.4</maven-failsafe-plugin.version>
+		<maven-surefire-plugin.version>3.5.4</maven-surefire-plugin.version>
+		<jacoco.version>0.8.14</jacoco.version>
 		<unit.coverage.file>${project.build.directory}/jacoco-output/jacoco-unit-tests.exec</unit.coverage.file>
 		<it.coverage.file>${project.build.directory}/jacoco-output/jacoco-it-tests.exec</it.coverage.file>
 		<merged.coverage.file>${project.build.directory}/jacoco-output/merged.exec</merged.coverage.file>

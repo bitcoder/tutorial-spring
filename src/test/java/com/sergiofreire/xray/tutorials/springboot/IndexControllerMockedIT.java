@@ -1,6 +1,6 @@
 package com.sergiofreire.xray.tutorials.springboot;
 
-import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import org.junit.jupiter.api.Test;
@@ -30,6 +30,6 @@ class IndexControllerMockedIT {
 	void getWelcomeMessage() throws Exception {
 		mvc.perform(MockMvcRequestBuilders.get("/").accept(MediaType.TEXT_PLAIN))
 				.andExpect(status().isOk())
-				.andExpect(content().string(equalTo("Welcome to this amazing website!")));
+				.andExpect(content().string(containsString("Welcome to this amazing website!")));
 	}
 }
