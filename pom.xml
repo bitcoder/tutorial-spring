@@ -30,8 +30,6 @@
 		<merged.coverage.file>${project.build.directory}/jacoco-output/merged.exec</merged.coverage.file>
 		<jacoco.maven.opts>
 			-javaagent:${settings.localRepository}/org/jacoco/org.jacoco.agent/${jacoco.version}/org.jacoco.agent-${jacoco.version}-runtime.jar=destfile=${it.coverage.file},append=true</jacoco.maven.opts>
-		<sonar.organization>bitcoder</sonar.organization>
-		<sonar.projectKey>tutorial-spring</sonar.projectKey>
 	</properties>
 	<dependencies>
 		<dependency>
