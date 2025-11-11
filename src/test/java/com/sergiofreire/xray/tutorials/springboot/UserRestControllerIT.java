@@ -1,6 +1,5 @@
 package com.sergiofreire.xray.tutorials.springboot;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -44,7 +43,7 @@ class UserRestControllerIT {
     User user1;
 
     @BeforeEach
-    public void resetDb() {
+    void resetDb() {
         repository.deleteAll();
         user1 = repository.save(new User("Sergio Freire", "sergiofreire", "dummypassword"));
     }
@@ -53,7 +52,7 @@ class UserRestControllerIT {
     @Requirement("ST-2")
     void createUserWithSuccess() {
         User john = new User("John Doe", "johndoe", "dummypassword");
-        ResponseEntity<User> entity = restTemplate.postForEntity("/api/users", john, User.class);
+        restTemplate.postForEntity("/api/users", john, User.class);
 
         List<User> foundUsers = repository.findAll();
         assertThat(foundUsers).extracting(User::getUsername).contains("johndoe");
@@ -94,7 +93,7 @@ class UserRestControllerIT {
 
     @Test
     @Requirement("ST-2")
-    void getUserUnsuccess() throws JSONException {
+    void getUserUnsuccess() {
         ResponseEntity<JSONObject> response = restTemplate.exchange("/api/user/-1", HttpMethod.GET, null, new ParameterizedTypeReference<JSONObject>() {
         });
 

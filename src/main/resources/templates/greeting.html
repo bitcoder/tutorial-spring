@@ -1,10 +1,20 @@
-<!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
-<head> 
-    <title>Getting Started: Serving Web Content</title> 
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="A simple Thymeleaf web page example saying hello to a user." />
+  <meta name="robots" content="index, follow" />
+
+  <title>Hello Page</title>
 </head>
+
 <body>
-    <p th:text="|Hello, ${name}!|" />
+  <main>
+    <h1>Hello!</h1>
+    <p th:text="|Hello, ${name}!|">Hello, Guest!</p>
+  </main>
+
 </body>
 </html>

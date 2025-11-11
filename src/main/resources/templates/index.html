@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Landing page for our amazing website." />
+  <meta name="robots" content="index, follow" />
+
+  <title>Welcome Page</title>
+
+  <!-- Preconnect for faster font loading -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  
+  <!-- Accessible, performant font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+
+  <!-- Minimal inline CSS (fast load, high contrast) -->
+  <style>
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      margin: 0;
+      padding: 2rem;
+      background-color: #ffffff;
+      color: #111827;
+      font-size: 1.125rem;
+      line-height: 1.6;
+    }
+    main {
+      max-width: 600px;
+      margin: auto;
+      text-align: center;
+    }
+    h1 {
+      font-size: 2rem;
+      color: #1d4ed8;
+      margin-bottom: 1rem;
+    }
+    p {
+      margin: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+    <h1>Welcome to this amazing website!</h1>
+  </main>
+
+  <!-- Lightweight script placeholder (deferred for performance) -->
+  <script defer>
+    // Example: Lighthouse likes scripts to be deferred
+    console.info("Page loaded successfully.");
+  </script>
+</body>
+</html>
