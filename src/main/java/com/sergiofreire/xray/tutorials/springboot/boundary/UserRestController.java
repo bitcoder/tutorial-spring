@@ -40,7 +40,7 @@ public class UserRestController {
     @GetMapping(path="/users" )
     public List<User> getAllUsers() {
         // return userService.getAllUsers();
-        // bug on purpose .. 
+        // bug on purpose ...
         return null;
     }
 
