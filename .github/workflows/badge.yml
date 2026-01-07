@@ -21,12 +21,12 @@ jobs:
       id: xray
       continue-on-error: true
       env:
-        XRAYCLOUD_CLIENT_ID: ${{ secrets.XRAYCLOUD_CLIENT_ID }}
-        XRAYCLOUD_CLIENT_SECRET: ${{ secrets.XRAYCLOUD_CLIENT_SECRET }}
-        XRAYCLOUD_PROJECT_KEY: "ST"
+        XRAY_CLIENT_ID: ${{ secrets.XRAYCLOUD_CLIENT_ID }}
+        XRAY_CLIENT_SECRET: ${{ secrets.XRAYCLOUD_CLIENT_SECRET }}
+        XRAY_PROJECT_KEY: "ST"
       run: |
         chmod +x ./bin/coverage.sh
-        ./bin/coverage.sh $XRAYCLOUD_PROJECT_KEY
+        ./bin/coverage.sh $XRAY_PROJECT_KEY
     - name: Xray coverage badge if coverage < 80%
       if: always() && fromJSON(steps.coverage.outputs.coverage_ok) < 80
       uses: RubbaBoy/BYOB@v1.3.0
