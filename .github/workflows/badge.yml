@@ -28,7 +28,7 @@ jobs:
         chmod +x ./bin/coverage.sh
         ./bin/coverage.sh $XRAY_PROJECT_KEY
     - name: Xray coverage badge if coverage < 80%
-      if: always() && fromJSON(steps.coverage.outputs.coverage_ok) < 80
+      if: always() && fromJSON(steps.xray.outputs.coverage_ok) < 80
       uses: RubbaBoy/BYOB@v1.3.0
       with:
         NAME: xray
@@ -37,7 +37,7 @@ jobs:
         COLOR: EE0000
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Xray coverage badge if coverage >= 80%
-      if: always() && fromJSON(steps.coverage.outputs.coverage_ok) >= 80
+      if: always() && fromJSON(steps.xray.outputs.coverage_ok) >= 80
       uses: RubbaBoy/BYOB@v1.3.0
       with:
         NAME: xray
