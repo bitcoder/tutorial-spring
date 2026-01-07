@@ -23,7 +23,7 @@ jobs:
       env:
         XRAY_CLIENT_ID: ${{ secrets.XRAYCLOUD_CLIENT_ID }}
         XRAY_CLIENT_SECRET: ${{ secrets.XRAYCLOUD_CLIENT_SECRET }}
-        XRAY_PROJECT_KEY: "ST"
+        XRAY_PROJECT_KEY: "BOOK"
       run: |
         chmod +x ./bin/coverage.sh
         ./bin/coverage.sh $XRAY_PROJECT_KEY
