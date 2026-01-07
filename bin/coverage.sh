@@ -9,6 +9,8 @@ if [ $# -ge 1 ]; then
     export JQL_QUERY="project = $1 AND issuetype = Story"
 fi
 
+THRESHOLD_OK=80
+
 set -euo pipefail
 
 # ========================
@@ -145,25 +147,25 @@ done
 # ========================
 # Final Percentage
 # ========================
-PERCENT=$(awk -v c="$COVERED_ISSUES" -v t="$TOTAL_ISSUES" \
+PERCENT_OK=$(awk -v c="$COVERED_ISSUES" -v t="$TOTAL_ISSUES" \
   'BEGIN { printf "%.2f", (c / t) * 100 }')
 
 echo "----------------------------------"
 echo "Total coverable issues : $TOTAL_ISSUES"
 echo "Covered issues         : $COVERED_ISSUES"
-echo "Coverage percentage    : $PERCENT%"
+echo "Coverage percentage    : $PERCENT_OK%"
 
 
 # Export coverage as GitHub Actions output
 if [[ -n "${GITHUB_OUTPUT:-}" ]]; then
-  echo "coverage_ok=$PERCENT" >> "$GITHUB_OUTPUT"
+  echo "coverage_ok=$PERCENT_OK" >> "$GITHUB_OUTPUT"
 fi
 
 # ========================
 # Threshold check
 # ========================
-if (( $(echo "$PERCENT < 80.0" | bc -l) )); then
-  echo "❌ Coverage below threshold (80%)"
+if (( $(echo "$PERCENT_OK < $THRESHOLD_OK" | bc -l) )); then
+  echo "❌ Coverage below threshold ($THRESHOLD_OK%)"
   exit 1
 else
   echo "✅ Coverage meets threshold"
