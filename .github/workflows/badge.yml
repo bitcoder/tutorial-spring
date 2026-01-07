@@ -32,16 +32,18 @@ jobs:
       uses: RubbaBoy/BYOB@v1.3.0
       with:
         NAME: xray
-        LABEL: 'Coverage'
+        LABEL: 'Xray Coverage'
         STATUS: ${{ steps.xray.outputs.coverage_ok }}%
         COLOR: EE0000
+        ICON: 'bitcoin-lightning'
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Xray coverage badge if coverage >= 80%
       if: always() && fromJSON(steps.xray.outputs.coverage_ok) >= 80
       uses: RubbaBoy/BYOB@v1.3.0
       with:
         NAME: xray
-        LABEL: 'Coverage'
+        LABEL: 'Xray Coverage'
         STATUS: ${{ steps.xray.outputs.coverage_ok }}%
         COLOR: 00EE00
+        ICON: 'bitcoin-lightning'
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
