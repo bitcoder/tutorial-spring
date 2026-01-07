@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 
+set -euo pipefail
+
 DEBUG=0
+FAIL_IF_THRESHOLD_NOT_MET=1
+
 export XRAY_BASE_URL="https://eu.xray.cloud.getxray.app"
 export JQL_QUERY="project = ST AND issuetype = Story"   
 
@@ -10,8 +14,25 @@ if [ $# -ge 1 ]; then
 fi
 
 THRESHOLD_OK=80
+THRESHOLD_NOK=5
+THRESHOLD_NOTRUN=10
+THRESHOLD_UNCOVERED=15
 
-set -euo pipefail
+override_with_env() {
+  local var_name="$1"
+  local default_value="$2"
+  if [[ -n "${!var_name:-}" ]]; then
+    echo "${!var_name}"
+  else
+    echo "$default_value"
+  fi
+}
+
+THRESHOLD_OK=$(override_with_env "THRESHOLD_OK" "$THRESHOLD_OK")
+THRESHOLD_NOK=$(override_with_env "THRESHOLD_NOK" "$THRESHOLD_NOK")
+THRESHOLD_NOTRUN=$(override_with_env "THRESHOLD_NOTRUN" "$THRESHOLD_NOTRUN")
+THRESHOLD_UNCOVERED=$(override_with_env "THRESHOLD_UNCOVERED" "$THRESHOLD_UNCOVERED")
+FAIL_IF_THRESHOLD_NOT_MET=$(override_with_env "FAIL_IF_THRESHOLD_NOT_MET" "$FAIL_IF_THRESHOLD_NOT_MET")
 
 # ========================
 # Configuration
@@ -86,6 +107,9 @@ echo "✅ Authenticated successfully"
 START=0
 TOTAL_ISSUES=0
 COVERED_ISSUES=0
+COVERED_OK_ISSUES=0
+COVERED_NOK_ISSUES=0
+COVERED_NOTRUN_ISSUES=0
 
 while true; do
   # Build GraphQL query safely (multiline OK)
@@ -130,9 +154,16 @@ EOF
     fi
   fi
 
-  PAGE_COVERED=$(echo "$RESPONSE" | jq -r '[.data.getCoverableIssues.results[] | select(.status.name != "OK")] | length // 0')
+  PAGE_UNCOVERED=$(echo "$RESPONSE" | jq -r '[.data.getCoverableIssues.results[] | select(.status.name == "UNCOVERED")] | length // 0')
+  PAGE_COVERED=$(echo "$RESPONSE" | jq -r '[.data.getCoverableIssues.results[] | select(.status.name != "UNCOVERED")] | length // 0')
+  PAGE_COVERED_OK=$(echo "$RESPONSE" | jq -r '[.data.getCoverableIssues.results[] | select(.status.name == "OK")] | length // 0')
+  PAGE_COVERED_NOK=$(echo "$RESPONSE" | jq -r '[.data.getCoverableIssues.results[] | select(.status.name == "NOK")] | length // 0')
+  PAGE_COVERED_NOTRUN=$(echo "$RESPONSE" | jq -r '[.data.getCoverableIssues.results[] | select(.status.name == "NOTRUN")] | length // 0')
 
   COVERED_ISSUES=$((COVERED_ISSUES + PAGE_COVERED))
+  COVERED_OK_ISSUES=$((COVERED_OK_ISSUES + PAGE_COVERED_OK))
+  COVERED_NOK_ISSUES=$((COVERED_NOK_ISSUES + PAGE_COVERED_NOK))
+  COVERED_NOTRUN_ISSUES=$((COVERED_NOTRUN_ISSUES + PAGE_COVERED_NOTRUN))
 
   echo "   → $PAGE_COUNT issues, $PAGE_COVERED covered"
 
@@ -149,25 +180,60 @@ done
 # ========================
 PERCENT_OK=$(awk -v c="$COVERED_ISSUES" -v t="$TOTAL_ISSUES" \
   'BEGIN { printf "%.2f", (c / t) * 100 }')
+PERCENT_OK=$(awk -v c="$COVERED_OK_ISSUES" -v t="$TOTAL_ISSUES" \
+  'BEGIN { printf "%.2f", (c / t) * 100 }')
+PERCENT_NOK=$(awk -v c="$COVERED_NOK_ISSUES" -v t="$TOTAL_ISSUES" \
+  'BEGIN { printf "%.2f", (c / t) * 100 }')
+PERCENT_NOTRUN=$(awk -v c="$COVERED_NOTRUN_ISSUES" -v t="$TOTAL_ISSUES" \
+  'BEGIN { printf "%.2f", (c / t) * 100 }')
+PERCENT_UNCOVERED=$(awk -v c="$((TOTAL_ISSUES - COVERED_ISSUES))" -v t="$TOTAL_ISSUES" \
+  'BEGIN { printf "%.2f", (c / t) * 100 }')
 
 echo "----------------------------------"
 echo "Total coverable issues : $TOTAL_ISSUES"
-echo "Covered issues         : $COVERED_ISSUES"
-echo "Coverage percentage    : $PERCENT_OK%"
+echo "Covered issues             : $COVERED_ISSUES"
+echo "UNCOVERED percentage       : $PERCENT_UNCOVERED%"
+echo "Coverage OK percentage     : $PERCENT_OK%"
+echo "Coverage NOK percentage    : $PERCENT_NOK%"
+echo "Coverage NOTRUN percentage : $PERCENT_NOTRUN%"
 
 
 # Export coverage as GitHub Actions output
-if [[ -n "${GITHUB_OUTPUT:-}" ]]; then
+if [[ -n "${GITHUB_OUTPUT:-}" ]]; then\
+  echo "coverage_uncovered=$PERCENT_UNCOVERED" >> "$GITHUB_OUTPUT"
   echo "coverage_ok=$PERCENT_OK" >> "$GITHUB_OUTPUT"
+  echo "coverage_nok=$PERCENT_NOK" >> "$GITHUB_OUTPUT"
+  echo "coverage_notrun=$PERCENT_NOTRUN" >> "$GITHUB_OUTPUT"
 fi
 
 # ========================
-# Threshold check
+# Thresholds check
 # ========================
-if (( $(echo "$PERCENT_OK < $THRESHOLD_OK" | bc -l) )); then
-  echo "❌ Coverage below threshold ($THRESHOLD_OK%)"
-  exit 1
-else
-  echo "✅ Coverage meets threshold"
-  exit 0
+if (( $(echo "$PERCENT_UNCOVERED >= $THRESHOLD_UNCOVERED" | bc -l) )); then
+  echo "❌ Requirements UNCOVERED ($PERCENT_UNCOVERED%) above threshold ($THRESHOLD_UNCOVERED%)"
+  if [[ "$FAIL_IF_THRESHOLD_NOT_MET" -eq 1 ]]; then
+    exit 1
+  fi
 fi
+if (( $(echo "$PERCENT_OK < $THRESHOLD_OK" | bc -l) )); then
+  echo "❌ Requirements with Coverage OK ($PERCENT_OK%) below threshold ($THRESHOLD_OK%)"
+  if [[ "$FAIL_IF_THRESHOLD_NOT_MET" -eq 1 ]]; then
+    exit 1
+  fi
+fi
+if (( $(echo "$PERCENT_NOK >= $THRESHOLD_NOK" | bc -l) )); then
+  echo "❌ Requirements with Coverage NOK ($PERCENT_NOK%) above threshold ($THRESHOLD_NOK%)"
+  if [[ "$FAIL_IF_THRESHOLD_NOT_MET" -eq 1 ]]; then
+    exit 1
+  fi
+fi
+if (( $(echo "$PERCENT_NOTRUN >= $THRESHOLD_NOTRUN" | bc -l) )); then
+  echo "❌ Requirements with Coverage NOTRUN ($PERCENT_NOTRUN%) above threshold ($THRESHOLD_NOTRUN%)"
+  if [[ "$FAIL_IF_THRESHOLD_NOT_MET" -eq 1 ]]; then
+    exit 1
+  fi
+fi
+
+
+echo "✅ Coverage meets threshold"
+exit 0
