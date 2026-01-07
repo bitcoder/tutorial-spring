@@ -1,0 +1,47 @@
+name: Xray Badge
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+
+permissions:
+    contents: write
+
+jobs:
+  badge:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    - name: Generate Xray coverage information
+      id: xray
+      continue-on-error: true
+      env:
+        XRAYCLOUD_CLIENT_ID: ${{ secrets.XRAYCLOUD_CLIENT_ID }}
+        XRAYCLOUD_CLIENT_SECRET: ${{ secrets.XRAYCLOUD_CLIENT_SECRET }}
+        XRAYCLOUD_PROJECT_KEY: "ST"
+      run: |
+        chmod +x ./bin/coverage.sh
+        ./bin/coverage.sh $XRAYCLOUD_PROJECT_KEY
+    - name: Xray coverage badge if coverage < 80%
+      if: always() && fromJSON(steps.coverage.outputs.coverage_ok) < 80
+      uses: RubbaBoy/BYOB@v1.3.0
+      with:
+        NAME: xray
+        LABEL: 'Coverage'
+        STATUS: ${{ steps.xray.outputs.coverage_ok }}%
+        COLOR: EE0000
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Xray coverage badge if coverage >= 80%
+      if: always() && fromJSON(steps.coverage.outputs.coverage_ok) >= 80
+      uses: RubbaBoy/BYOB@v1.3.0
+      with:
+        NAME: xray
+        LABEL: 'Coverage'
+        STATUS: ${{ steps.xray.outputs.coverage_ok }}%
+        COLOR: 00EE00
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
