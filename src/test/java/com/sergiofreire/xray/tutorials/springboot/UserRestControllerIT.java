@@ -105,14 +105,14 @@ class UserRestControllerIT {
     @Requirement("ST-2")
     void listAllUsersWithSuccess()  {
         createTempUser("Amanda James", "amanda", "dummypassword");
-        createTempUser("Robert Junior", "robert", "dummypassword");
+        createTempUser("Robert Wilson", "robert", "dummypassword");
 
         ResponseEntity<List<User>> response = restTemplate
                 .exchange("/api/users", HttpMethod.GET, null, new ParameterizedTypeReference<List<User>>() {
                 });
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody()).extracting(User::getName).containsExactly("Sergio Freire", "Amanda James", "Robert Junior");
+        assertThat(response.getBody()).extracting(User::getName).containsExactly("Sergio Freire", "Amanda James", "Robert Wilson");
     }
 
     @Test
