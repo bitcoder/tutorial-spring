@@ -1,0 +1,31 @@
+on:
+  workflow_dispatch:
+permissions:
+  id-token: write
+  contents: read
+jobs:
+  copilot-setup-steps:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    environment: copilot
+    outputs:
+      xray_token: ${{ steps.auth.outputs.token }}
+
+    steps:
+      - name: Authenticate with Xray
+        id: auth
+        run: |
+          RESPONSE=$(curl -s -X POST "https://xray.cloud.getxray.app/api/v2/authenticate" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "client_id": "'"${{ secrets.XRAYCLOUD_CLIENT_ID }}"'",
+              "client_secret": "'"${{ secrets.XRAYCLOUD_CLIENT_SECRET }}"'"
+            }')
+
+          # Xray returns token as a JSON string (quoted), so strip quotes
+          TOKEN=$(echo $RESPONSE | tr -d '"')
+
+          echo "token=$TOKEN" >> $GITHUB_OUTPUT
+          echo "token=$TOKEN" >> some_file
