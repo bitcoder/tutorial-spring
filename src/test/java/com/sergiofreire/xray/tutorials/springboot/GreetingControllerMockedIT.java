@@ -10,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import app.getxray.xray.junit.customjunitxml.annotations.Requirement;
 import com.sergiofreire.xray.tutorials.springboot.boundary.GreetingController;
 
 // @SpringBootTest
@@ -22,6 +23,7 @@ class GreetingControllerMockedIT {
 	private MockMvc mvc;
 
 	@Test
+	@Requirement("ST-3")
 	void getDefaultGreeting() throws Exception {
 		mvc.perform(MockMvcRequestBuilders.get("/greeting").accept(MediaType.TEXT_PLAIN))
 				.andExpect(status().isOk())
@@ -29,6 +31,7 @@ class GreetingControllerMockedIT {
 	}
 
 	@Test
+	@Requirement("ST-3")
 	void getPersonalizedGreeting() throws Exception {
 		mvc.perform(
 				MockMvcRequestBuilders.get("/greeting").param("name", "John").accept(MediaType.TEXT_PLAIN))
