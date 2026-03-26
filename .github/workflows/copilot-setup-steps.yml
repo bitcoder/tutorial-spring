@@ -10,8 +10,6 @@ jobs:
       id-token: write
       contents: read
     environment: copilot
-    outputs:
-      xray_token: ${{ steps.auth.outputs.token }}
 
     steps:
         # Checkout the repository to install dependencies (exp)
@@ -29,8 +27,4 @@ jobs:
 
           # Xray returns token as a JSON string (quoted), so strip quotes
           TOKEN=$(echo $RESPONSE | tr -d '"')
-
-          echo "token=$TOKEN" >> $GITHUB_OUTPUT
-          echo "XRAY_TOKEN=$TOKEN" >> $GITHUB_ENV
-          echo "COPILOT_MCP_XRAY_TOKEN=$TOKEN" >> $GITHUB_ENV
-          echo "COPILOT_AGENT_XRAY_TOKEN=$TOKEN" >> $GITHUB_ENV
+          echo "XRAY_AUTH_TOKEN=$TOKEN" >> $GITHUB_ENV
