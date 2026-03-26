@@ -14,6 +14,9 @@ jobs:
       xray_token: ${{ steps.auth.outputs.token }}
 
     steps:
+        # Checkout the repository to install dependencies (exp)
+      - name: Checkout code
+        uses: actions/checkout@v6.0.2
       - name: Authenticate with Xray
         id: auth
         run: |
