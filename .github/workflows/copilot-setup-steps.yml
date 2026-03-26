@@ -31,4 +31,6 @@ jobs:
           TOKEN=$(echo $RESPONSE | tr -d '"')
 
           echo "token=$TOKEN" >> $GITHUB_OUTPUT
-          echo "token=$TOKEN" >> some_file
+          echo "XRAY_TOKEN=$TOKEN" >> $GITHUB_ENV
+          echo "COPILOT_MCP_XRAY_TOKEN=$TOKEN" >> $GITHUB_ENV
+          echo "COPILOT_AGENT_XRAY_TOKEN=$TOKEN" >> $GITHUB_ENV
