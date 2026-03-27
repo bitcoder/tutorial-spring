@@ -26,7 +26,9 @@ jobs:
     strategy:
       matrix:
         java: [ '17', '21' ]
-        
+    permissions:
+      pull-requests: write
+
     steps:
     - uses: actions/checkout@v4
       with:
@@ -37,13 +39,16 @@ jobs:
         java-version: ${{ matrix.java }}
         distribution: 'temurin'
         cache: maven
-    - name: Build and run unit tests
-      run: mvn -B package --file pom.xml
-    - name: Run integration tests
-      run: mvn -B integration-test verify --file pom.xml
+    - name: Run unit and integration tests
+      run: mvn test failsafe:integration-test verify
+    - name: SonarQube Cloud analysis
+      run: mvn sonar:sonar -Dsonar.qualitygate.wait=true -Dsonar.projectKey=bitcoder_tutorial-spring -Dsonar.organization=bitcoder -Dsonar.host.url=https://sonarcloud.io -Dsonar.token=${{ secrets.SONAR_TOKEN }} -Dsonar.pullrequest.key=${{ github.event.pull_request.number }} -Dsonar.pullrequest.branch=${{ github.head_ref }} -Dsonar.pullrequest.base=${{ github.base_ref }} -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco-merged-test-coverage-report/jacoco.xml
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Add code coverage information to PR
       id: jacoco-pr
-      uses: madrapps/jacoco-report@v1.7.1
+      uses: madrapps/jacoco-report@v1.7.2
       if: github.event_name == 'pull_request'
       with:
         paths: |
