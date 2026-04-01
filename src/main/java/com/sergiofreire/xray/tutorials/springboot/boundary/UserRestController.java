@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import com.sergiofreire.xray.tutorials.springboot.data.User;
 import com.sergiofreire.xray.tutorials.springboot.services.UserService;
 
+import jakarta.validation.Valid;
 import java.util.List;
 
 /**
@@ -44,7 +45,7 @@ public class UserRestController {
 
     @PutMapping("/users/{id}")
     public ResponseEntity<User> updateUser(@PathVariable(value = "id") Long id, 
-                                           @RequestBody User userDetails)
+                                           @Valid @RequestBody User userDetails)
             throws ResourceNotFoundException {
         User user = userService.getUserDetails(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found for id: " + id));

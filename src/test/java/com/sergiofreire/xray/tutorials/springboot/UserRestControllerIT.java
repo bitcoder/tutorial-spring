@@ -155,6 +155,26 @@ class UserRestControllerIT {
     }
 
     @Test
+    @Requirement("ST-233")
+    void dontUpdateUserWithInvalidData() {
+        User invalidUserData = new User("", "abc", "123"); // Empty name, too short username and password
+        
+        ResponseEntity<User> response = restTemplate.exchange(
+                "/api/users/" + user1.getId(), 
+                HttpMethod.PUT, 
+                new org.springframework.http.HttpEntity<>(invalidUserData), 
+                User.class);
+        
+        // Server returns 400 BAD_REQUEST for validation errors (proper HTTP semantics with @Valid)
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        
+        // Verify original data unchanged
+        User found = repository.findById(user1.getId()).orElseThrow();
+        assertThat(found.getName()).isEqualTo("Sergio Freire");
+        assertThat(found.getUsername()).isEqualTo("sergiofreire");
+    }
+
+    @Test
     @Requirement("ST-2")
     void deleteUserWithSuccess() {
         ResponseEntity<User> response = restTemplate.exchange("/api/users/" + user1.getId(), HttpMethod.DELETE, null, User.class);
