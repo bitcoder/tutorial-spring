@@ -17,6 +17,8 @@ import java.util.List;
 @RequestMapping("/api")
 public class UserRestController {
 
+    private static final String USER_NOT_FOUND_MSG = "User not found for id: ";
+    
     private final UserService userService;
 
     public UserRestController(UserService userService) {
@@ -34,7 +36,7 @@ public class UserRestController {
     public ResponseEntity<User> getCarById(@PathVariable(value = "id") Long id)
             throws ResourceNotFoundException {
         User user = userService.getUserDetails(id)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found for id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND_MSG + id));
         return ResponseEntity.ok().body(user);
     }
 
@@ -48,7 +50,7 @@ public class UserRestController {
                                            @Valid @RequestBody User userDetails)
             throws ResourceNotFoundException {
         User user = userService.getUserDetails(id)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found for id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND_MSG + id));
         
         user.setName(userDetails.getName());
         user.setUsername(userDetails.getUsername());
@@ -62,7 +64,7 @@ public class UserRestController {
     public ResponseEntity<User> deleteUserById(@PathVariable(value = "id") Long id)
             throws ResourceNotFoundException {
         User user = userService.getUserDetails(id)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found for id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND_MSG + id));
         userService.deleteUser(user);
         return ResponseEntity.ok().body(user); 
     }
