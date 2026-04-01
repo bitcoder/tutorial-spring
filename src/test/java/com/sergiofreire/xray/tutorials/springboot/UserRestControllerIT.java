@@ -9,8 +9,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -51,8 +54,16 @@ class UserRestControllerIT {
     @Test
     @Requirement("ST-2")
     void createUserWithSuccess() {
-        User john = new User("John Doe", "johndoe", "dummypassword");
-        restTemplate.postForEntity("/api/users", john, User.class);
+        // Send raw JSON to avoid serialization issues with @JsonProperty(access = WRITE_ONLY)
+        String jsonPayload = "{\"name\":\"John Doe\",\"username\":\"johndoe\",\"password\":\"dummypassword\"}";
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> request = new HttpEntity<>(jsonPayload, headers);
+        
+        ResponseEntity<User> response = restTemplate.postForEntity("/api/users", request, User.class);
+        
+        // Verify the user was created successfully
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 
         List<User> foundUsers = repository.findAll();
         assertThat(foundUsers).extracting(User::getUsername).contains("johndoe");
@@ -64,8 +75,8 @@ class UserRestControllerIT {
         User john = new User("John Doe", "", "dummypassword");
         ResponseEntity<User> response = restTemplate.postForEntity("/api/users", john, User.class);
  
-        // ideally, the server shouldnt return 500, but 400 (bad request)
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
+        // Server should return 400 (bad request) for validation errors
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
  
         List<User> found = repository.findAll();
         assertThat(found).hasSize(1);
@@ -88,7 +99,10 @@ class UserRestControllerIT {
         User user = response.getBody();
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(user1).isEqualTo(user);
+        // Compare by ID and business fields, not password (which is hashed and not returned)
+        assertThat(user.getId()).isEqualTo(user1.getId());
+        assertThat(user.getName()).isEqualTo(user1.getName());
+        assertThat(user.getUsername()).isEqualTo(user1.getUsername());
     }
 
     @Test

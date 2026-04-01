@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import com.sergiofreire.xray.tutorials.springboot.data.User;
 import com.sergiofreire.xray.tutorials.springboot.services.UserService;
 
+import jakarta.validation.Valid;
 import java.util.List;
 
 /**
@@ -23,7 +24,7 @@ public class UserRestController {
     }
 
     @PostMapping("/users" )
-    public ResponseEntity<User> createUser(@RequestBody User user) {
+    public ResponseEntity<User> createUser(@Valid @RequestBody User user) {
         HttpStatus status = HttpStatus.CREATED;
         User saved = userService.save(user);
         return new ResponseEntity<>(saved, status);

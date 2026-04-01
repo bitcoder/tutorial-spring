@@ -10,6 +10,8 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.Objects;
 
 @Entity
@@ -31,8 +33,9 @@ public class User {
     private String username;
 
     @Column(nullable = false)
-    @Size(min = 5)
+    @Size(min = 8, message = "Password must be at least 8 characters")
     @NotBlank(message = "Password is mandatory")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     public User() {
