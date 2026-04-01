@@ -116,6 +116,45 @@ class UserRestControllerIT {
     }
 
     @Test
+    @Requirement("ST-233")
+    void updateUserWithSuccess() {
+        User updatedUserData = new User("Sergio Updated", "sergioupdated", "newpassword");
+        
+        ResponseEntity<User> response = restTemplate.exchange(
+                "/api/users/" + user1.getId(), 
+                HttpMethod.PUT, 
+                new org.springframework.http.HttpEntity<>(updatedUserData), 
+                User.class);
+        
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody().getName()).isEqualTo("Sergio Updated");
+        assertThat(response.getBody().getUsername()).isEqualTo("sergioupdated");
+        assertThat(response.getBody().getPassword()).isEqualTo("newpassword");
+        
+        User found = repository.findById(user1.getId()).orElseThrow();
+        assertThat(found.getName()).isEqualTo("Sergio Updated");
+        assertThat(found.getUsername()).isEqualTo("sergioupdated");
+        assertThat(found.getPassword()).isEqualTo("newpassword");
+    }
+
+    @Test
+    @Requirement("ST-233")
+    void updateUserUnsuccess() {
+        User updatedUserData = new User("Non Existent", "nonexistent", "password");
+        
+        ResponseEntity<User> response = restTemplate.exchange(
+                "/api/users/" + (user1.getId() + 999), 
+                HttpMethod.PUT, 
+                new org.springframework.http.HttpEntity<>(updatedUserData), 
+                User.class);
+        
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        
+        User found = repository.findById(user1.getId()).orElseThrow();
+        assertThat(found.getName()).isEqualTo("Sergio Freire");
+    }
+
+    @Test
     @Requirement("ST-2")
     void deleteUserWithSuccess() {
         ResponseEntity<User> response = restTemplate.exchange("/api/users/" + user1.getId(), HttpMethod.DELETE, null, User.class);
