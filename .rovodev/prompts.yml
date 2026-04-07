@@ -1,0 +1,4 @@
+prompts:
+  - name: show-requirement-coverage
+    description: Show requirement coverage based on Xray test management
+    content_file: show-requirement-coverage.md
