@@ -14,6 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import com.sergiofreire.xray.tutorials.springboot.boundary.dto.UserCreateDTO;
+import com.sergiofreire.xray.tutorials.springboot.boundary.dto.UserResponseDTO;
 import com.sergiofreire.xray.tutorials.springboot.data.User;
 import com.sergiofreire.xray.tutorials.springboot.data.UserRepository;
 
@@ -51,9 +53,12 @@ class UserRestControllerIT {
     @Test
     @Requirement("ST-2")
     void createUserWithSuccess() {
-        User john = new User("John Doe", "johndoe", "dummypassword");
-        restTemplate.postForEntity("/api/users", john, User.class);
+        UserCreateDTO john = new UserCreateDTO("John Doe", "johndoe", "dummypassword");
+        ResponseEntity<UserResponseDTO> response = restTemplate.postForEntity("/api/users", john, UserResponseDTO.class);
 
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        assertThat(response.getBody().getUsername()).isEqualTo("johndoe");
+        
         List<User> foundUsers = repository.findAll();
         assertThat(foundUsers).extracting(User::getUsername).contains("johndoe");
     }
@@ -61,11 +66,11 @@ class UserRestControllerIT {
     @Test
     @Requirement("ST-2")
     void dontCreateUserForInvalidData() {
-        User john = new User("John Doe", "", "dummypassword");
-        ResponseEntity<User> response = restTemplate.postForEntity("/api/users", john, User.class);
+        UserCreateDTO john = new UserCreateDTO("John Doe", "", "dummypassword");
+        ResponseEntity<UserResponseDTO> response = restTemplate.postForEntity("/api/users", john, UserResponseDTO.class);
  
-        // ideally, the server shouldnt return 500, but 400 (bad request)
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
+        // With @Valid annotation, this should now return 400 (bad request) instead of 500
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
  
         List<User> found = repository.findAll();
         assertThat(found).hasSize(1);
@@ -83,12 +88,14 @@ class UserRestControllerIT {
                 .build()
                 .toUriString();
 
-        ResponseEntity<User> response = restTemplate.exchange(endpoint, HttpMethod.GET, null, new ParameterizedTypeReference<User>() {
+        ResponseEntity<UserResponseDTO> response = restTemplate.exchange(endpoint, HttpMethod.GET, null, new ParameterizedTypeReference<UserResponseDTO>() {
         });
-        User user = response.getBody();
+        UserResponseDTO userDTO = response.getBody();
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(user1).isEqualTo(user);
+        assertThat(userDTO.getId()).isEqualTo(user1.getId());
+        assertThat(userDTO.getName()).isEqualTo(user1.getName());
+        assertThat(userDTO.getUsername()).isEqualTo(user1.getUsername());
     }
 
     @Test
@@ -107,18 +114,18 @@ class UserRestControllerIT {
         createTempUser("Amanda James", "amanda", "dummypassword");
         createTempUser("Robert Wilson", "robert", "dummypassword");
 
-        ResponseEntity<List<User>> response = restTemplate
-                .exchange("/api/users", HttpMethod.GET, null, new ParameterizedTypeReference<List<User>>() {
+        ResponseEntity<List<UserResponseDTO>> response = restTemplate
+                .exchange("/api/users", HttpMethod.GET, null, new ParameterizedTypeReference<List<UserResponseDTO>>() {
                 });
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody()).extracting(User::getName).containsExactly("Sergio Freire", "Amanda James", "Robert Wilson");
+        assertThat(response.getBody()).extracting(UserResponseDTO::getName).containsExactly("Sergio Freire", "Amanda James", "Robert Wilson");
     }
 
     @Test
     @Requirement("ST-2")
     void deleteUserWithSuccess() {
-        ResponseEntity<User> response = restTemplate.exchange("/api/users/" + user1.getId(), HttpMethod.DELETE, null, User.class);
+        ResponseEntity<UserResponseDTO> response = restTemplate.exchange("/api/users/" + user1.getId(), HttpMethod.DELETE, null, UserResponseDTO.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody().getName()).isEqualTo("Sergio Freire");
 
@@ -129,7 +136,7 @@ class UserRestControllerIT {
     @Test
     @Requirement("ST-2")
     void deleteUserUnsuccess() {
-        ResponseEntity<User> response = restTemplate.exchange("/api/users/" + (user1.getId()+2), HttpMethod.DELETE, null, User.class);
+        ResponseEntity<UserResponseDTO> response = restTemplate.exchange("/api/users/" + (user1.getId()+2), HttpMethod.DELETE, null, UserResponseDTO.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
 
         List<User> found = repository.findAll();
