@@ -136,6 +136,68 @@ class UserRestControllerIT {
         assertThat(found).hasSize(1);
     }
 
+    @Test
+    @Requirement("ST-233")
+    void updateUserWithSuccess() {
+        User updatedUser = new User("Sergio Updated", "sergioupdated", "newpassword");
+        
+        ResponseEntity<User> response = restTemplate.exchange(
+            "/api/users/" + user1.getId(), 
+            HttpMethod.PUT, 
+            new org.springframework.http.HttpEntity<>(updatedUser), 
+            User.class
+        );
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody().getName()).isEqualTo("Sergio Updated");
+        assertThat(response.getBody().getUsername()).isEqualTo("sergioupdated");
+        assertThat(response.getBody().getPassword()).isEqualTo("newpassword");
+        assertThat(response.getBody().getId()).isEqualTo(user1.getId());
+
+        // Verify the user was actually updated in the database
+        User foundUser = repository.findById(user1.getId()).orElse(null);
+        assertThat(foundUser).isNotNull();
+        assertThat(foundUser.getName()).isEqualTo("Sergio Updated");
+        assertThat(foundUser.getUsername()).isEqualTo("sergioupdated");
+    }
+
+    @Test
+    @Requirement("ST-233")
+    void updateUserNotFound() {
+        User updatedUser = new User("Nonexistent User", "nonexistent", "password");
+        
+        ResponseEntity<User> response = restTemplate.exchange(
+            "/api/users/99999", 
+            HttpMethod.PUT, 
+            new org.springframework.http.HttpEntity<>(updatedUser), 
+            User.class
+        );
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+    }
+
+    @Test
+    @Requirement("ST-233")
+    void updateUserWithInvalidData() {
+        User updatedUser = new User("", "", ""); // Invalid data
+        
+        ResponseEntity<User> response = restTemplate.exchange(
+            "/api/users/" + user1.getId(), 
+            HttpMethod.PUT, 
+            new org.springframework.http.HttpEntity<>(updatedUser), 
+            User.class
+        );
+
+        // Should return error status (500 or 400)
+        assertThat(response.getStatusCode().is4xxClientError() || response.getStatusCode().is5xxServerError()).isTrue();
+
+        // Verify the user was NOT updated in the database
+        User foundUser = repository.findById(user1.getId()).orElse(null);
+        assertThat(foundUser).isNotNull();
+        assertThat(foundUser.getName()).isEqualTo("Sergio Freire"); // Original name
+    }
+
     private void createTempUser(String name, String username, String password) {
         User user = new User(name, username, password);
         repository.saveAndFlush(user);
