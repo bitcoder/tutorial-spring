@@ -2,3 +2,8 @@ target/
 reports/
 .vscode/
 merged.coverage.file
+.agentic-qe/
+fox.mp4
+.mcp.json
+CLAUDE.md
+.github/copilot-instructions.md
