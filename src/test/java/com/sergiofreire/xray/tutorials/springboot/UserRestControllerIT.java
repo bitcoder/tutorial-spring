@@ -136,6 +136,55 @@ class UserRestControllerIT {
         assertThat(found).hasSize(1);
     }
 
+    @Test
+    @Requirement("ST-233")
+    void updateUserWithSuccess() {
+        User updatedUser = new User("Sergio Freire Updated", "sergiofreire_updated", "newpassword123");
+        updatedUser.setId(user1.getId());
+        
+        ResponseEntity<User> response = restTemplate.exchange("/api/users/" + user1.getId(), HttpMethod.PUT, 
+                new org.springframework.http.HttpEntity<>(updatedUser), User.class);
+        
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody().getName()).isEqualTo("Sergio Freire Updated");
+        assertThat(response.getBody().getUsername()).isEqualTo("sergiofreire_updated");
+        assertThat(response.getBody().getPassword()).isEqualTo("newpassword123");
+        
+        User foundUser = repository.findById(user1.getId()).orElse(null);
+        assertThat(foundUser).isNotNull();
+        assertThat(foundUser.getName()).isEqualTo("Sergio Freire Updated");
+        assertThat(foundUser.getUsername()).isEqualTo("sergiofreire_updated");
+    }
+
+    @Test
+    @Requirement("ST-233")
+    void updateUserWithInvalidData() {
+        User invalidUser = new User("", "", "");
+        
+        ResponseEntity<User> response = restTemplate.exchange("/api/users/" + user1.getId(), HttpMethod.PUT, 
+                new org.springframework.http.HttpEntity<>(invalidUser), User.class);
+        
+        // Server should return error for invalid data
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
+        
+        // Original user should remain unchanged
+        User foundUser = repository.findById(user1.getId()).orElse(null);
+        assertThat(foundUser).isNotNull();
+        assertThat(foundUser.getName()).isEqualTo("Sergio Freire");
+    }
+
+    @Test
+    @Requirement("ST-233")
+    void updateNonExistentUser() {
+        User updatedUser = new User("Non Existent", "nonexistent", "password123");
+        
+        ResponseEntity<User> response = restTemplate.exchange("/api/users/999", HttpMethod.PUT, 
+                new org.springframework.http.HttpEntity<>(updatedUser), User.class);
+        
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+    }
+
     private void createTempUser(String name, String username, String password) {
         User user = new User(name, username, password);
         repository.saveAndFlush(user);
