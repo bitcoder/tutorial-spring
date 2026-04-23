@@ -46,6 +46,7 @@ class UserServiceUnitTest {
  
         Mockito.when(userRepository.findById(john.getId())).thenReturn(Optional.of(john));
         Mockito.when(userRepository.findByUsername(john.getUsername())).thenReturn(john);
+        Mockito.when(userRepository.findByUsername(john.getUsername())).thenReturn(john);
         Mockito.when(userRepository.findAll()).thenReturn(allUsers);
         Mockito.when(userRepository.findById(-99L)).thenReturn(Optional.empty());
     }
@@ -85,20 +86,21 @@ class UserServiceUnitTest {
     }
 
     @Test
-     void existsReturnsTrueIfExisting() {
-        boolean exists = userService.exists("johndoe");
+    void existsReturnsTrueForValidUsername() {
+        boolean userFound = userService.exists("johndoe");
 
         Mockito.verify(userRepository, VerificationModeFactory.times(1)).findByUsername(Mockito.anyString());
-        assertThat(exists).isTrue();
+        assertThat(userFound).isTrue();
     }
-
+    
     @Test
-     void existsReturnsFalseIfNonExisting() {
-        boolean exists = userService.exists("unknown");
+    void existsReturnsFalseForInvalidUsername() {
+        boolean userFound = userService.exists("missinguser");
 
         Mockito.verify(userRepository, VerificationModeFactory.times(1)).findByUsername(Mockito.anyString());
-        assertThat(exists).isFalse();
+        assertThat(userFound).isFalse();
     }
+
 
     @Test
      void getAllUsersReturnsAllExistingUsers() {
