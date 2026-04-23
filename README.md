@@ -5,6 +5,7 @@
 [![Jira](https://img.shields.io/badge/jira-%230A0FFF.svg?style=for-the-badge&logo=jira&logoColor=white)](https://sergiofreire.atlassian.net/browse/ST)
 
 
+
 This is a simple Spring Boot tutorial to showcase the CI flow:
 
 - make local changes & push them
