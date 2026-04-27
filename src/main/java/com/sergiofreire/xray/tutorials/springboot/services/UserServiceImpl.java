@@ -3,6 +3,7 @@ package com.sergiofreire.xray.tutorials.springboot.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.sergiofreire.xray.tutorials.springboot.boundary.ResourceNotFoundException;
 import com.sergiofreire.xray.tutorials.springboot.data.User;
 import com.sergiofreire.xray.tutorials.springboot.data.UserRepository;
 
@@ -37,6 +38,18 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<User> getAllUsers() {
         return userRepository.findAll();
+    }
+
+    @Override
+    public User updateUser(Long id, User userDetails) throws ResourceNotFoundException {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found for id: " + id));
+        
+        user.setName(userDetails.getName());
+        user.setUsername(userDetails.getUsername());
+        user.setPassword(userDetails.getPassword());
+        
+        return userRepository.save(user);
     }
 
     @Override
