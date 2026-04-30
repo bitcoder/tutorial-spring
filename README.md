@@ -6,6 +6,7 @@
 [![Xray](https://byob.yarr.is/bitcoder/tutorial-spring/xray)](https://sergiofreire.atlassian.net/plugins/servlet/ac/com.xpandit.plugins.xray/test-coverage-report-page?project.key=ST&project.id=10007)
 
 
+
 This is a simple Spring Boot tutorial to showcase the CI flow:
 
 - make local changes & push them
