@@ -14,6 +14,7 @@ To organize Tests in Xray, follow the steps below:
 It also provides the capability to clean up the Test Repository in Xray by removing useless folders that don't have any tests in them or in any of their subfolders.
 
 **ALWAYS**:
+ - have in mind that Test Repository only contains the Tests that belong to a Jira project in particular, so each Jira project has implicitly its own Test Repository for the tests that belong to its project
  - use just the `mcp-graphql` tool to interact with Xray, to obtain the list of folders and their tests count, to create folders, to move tests to folders, and to delete folders in Xray.
  - obtain tests from Xray using the `obtaining-tests` skill, if you aim to obtain all Tests in a project, to have all the relevant information about the tests that can be useful for organizing them in Xray, such as their issue ids, their components, their priority, the covered items, and so on.
 
