@@ -1,4 +1,5 @@
 ---
+name: 'xray-test-repository-organizer'
 description: 'Organize tests in Xray, in folders within the Test Repository, based on attributes of tests or other criteria.'
 tools: ['edit/createFile', 'edit/createDirectory', 'edit/editFiles', 'search', 'execute/getTerminalOutput', 'execute/runInTerminal', 'read/terminalLastCommand', 'read/terminalSelection', 'search/usages', 'read/problems', 'search/changes', 'execute/testFailure', 'mcp-graphql/*']
 ---
