@@ -1,0 +1,76 @@
+name: Issue Triage
+
+on:
+  issues:
+    types: [opened, reopened]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  triage:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Triage issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issue = context.payload.issue;
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const issue_number = issue.number;
+
+            const labels = {
+              "needs-triage": { color: "FBCA04", description: "Issue needs maintainer triage" },
+              "bug": { color: "D73A4A", description: "Something is not working" },
+              "enhancement": { color: "A2EEEF", description: "New feature or improvement" },
+              "question": { color: "D876E3", description: "Further information is requested" }
+            };
+
+            const ensureLabel = async (name, config) => {
+              try {
+                await github.rest.issues.getLabel({ owner, repo, name });
+              } catch (error) {
+                if (error.status === 404) {
+                  await github.rest.issues.createLabel({
+                    owner,
+                    repo,
+                    name,
+                    color: config.color,
+                    description: config.description
+                  });
+                } else {
+                  throw error;
+                }
+              }
+            };
+
+            for (const [name, config] of Object.entries(labels)) {
+              await ensureLabel(name, config);
+            }
+
+            const normalized = `${issue.title}\n${issue.body || ""}`.toLowerCase();
+            const autoLabels = ["needs-triage"];
+
+            if (/\b(bug|error|fail|failure|broken|exception)\b/.test(normalized)) {
+              autoLabels.push("bug");
+            } else if (/\b(feature|enhancement|improvement|request)\b/.test(normalized)) {
+              autoLabels.push("enhancement");
+            } else if (/\b(question|how|help|why)\b/.test(normalized)) {
+              autoLabels.push("question");
+            }
+
+            await github.rest.issues.addLabels({
+              owner,
+              repo,
+              issue_number,
+              labels: autoLabels
+            });
+
+            await github.rest.issues.createComment({
+              owner,
+              repo,
+              issue_number,
+              body: "Thanks for opening this issue. It has been labeled for triage and will be reviewed by the maintainers."
+            });
