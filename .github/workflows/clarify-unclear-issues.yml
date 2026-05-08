@@ -12,13 +12,16 @@ jobs:
   request-clarification:
     if: ${{ github.event.issue.pull_request == null }}
     runs-on: ubuntu-latest
+    env:
+      MIN_TITLE_LENGTH: 20
+      MIN_BODY_LENGTH: 100
     steps:
       - name: Ask for clarification when issue is unclear
         uses: actions/github-script@v7
         with:
           script: |
-            const MIN_TITLE_LENGTH = 20;
-            const MIN_BODY_LENGTH = 100;
+            const MIN_TITLE_LENGTH = Number(process.env.MIN_TITLE_LENGTH || 20);
+            const MIN_BODY_LENGTH = Number(process.env.MIN_BODY_LENGTH || 100);
             const issue = context.payload.issue;
             const owner = context.repo.owner;
             const repo = context.repo.repo;
@@ -28,15 +31,21 @@ jobs:
             const title = (issue.title || '').trim();
             const body = (issue.body || '').trim();
             const normalizedBody = body
+              // Remove markdown headers.
               .replace(/^#{1,6}\s+/gm, '')
+              // Remove checklist markers while keeping item text.
               .replace(/^\s*[-*]\s+\[[ xX]\]\s*/gm, '')
+              // Remove horizontal rules.
               .replace(/^\s*[-*_]{3,}\s*$/gm, '')
+              // Keep markdown link text, discard URL.
               .replace(/\[(.*?)\]\((.*?)\)/g, '$1')
+              // Normalize whitespace for consistent length scoring.
               .replace(/\s+/g, ' ')
               .trim();
 
             const isBodyTooShort = normalizedBody.length < MIN_BODY_LENGTH;
             const isTitleTooShort = title.length < MIN_TITLE_LENGTH;
+            // Ask clarification when body is empty, or when both title and body are too short.
             const unclear = normalizedBody.length === 0 || (isTitleTooShort && isBodyTooShort);
 
             if (!unclear) {
