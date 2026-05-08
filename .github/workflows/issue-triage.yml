@@ -62,7 +62,7 @@ jobs:
               await ensureLabel(name, config);
             }
 
-            const normalized = `${issue.title}\n${issue.body || ""}`
+            const normalized = `${issue.title}\n${issue.body ?? ""}`
               .toLowerCase()
               .replace(/\s+/g, " ")
               .trim();
@@ -89,5 +89,5 @@ jobs:
               owner,
               repo,
               issue_number,
-              body: "Thanks for opening this issue. It has been labeled for triage and will be reviewed by the maintainers."
+              body: `Thanks for opening this issue. It has been labeled as: ${autoLabels.join(", ")}. A maintainer will review it soon.`
             });
