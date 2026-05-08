@@ -23,9 +23,21 @@ jobs:
 
             const labels = {
               "needs-triage": { color: "FBCA04", description: "Issue needs maintainer triage" },
-              "bug": { color: "D73A4A", description: "Something is not working" },
-              "enhancement": { color: "A2EEEF", description: "New feature or improvement" },
-              "question": { color: "D876E3", description: "Further information is requested" }
+              "bug": {
+                color: "D73A4A",
+                description: "Something is not working",
+                pattern: /\b(bug|error|fail|failure|broken|exception)\b/
+              },
+              "enhancement": {
+                color: "A2EEEF",
+                description: "New feature or improvement",
+                pattern: /\b(feature|enhancement|improvement|request)\b/
+              },
+              "question": {
+                color: "D876E3",
+                description: "Further information is requested",
+                pattern: /\b(question|how|help|why)\b/
+              }
             };
 
             const ensureLabel = async (name, config) => {
@@ -50,17 +62,20 @@ jobs:
               await ensureLabel(name, config);
             }
 
-            const normalized = `${issue.title}\n${issue.body || ""}`.toLowerCase();
-            const autoLabels = ["needs-triage"];
+            const normalized = `${issue.title}\n${issue.body || ""}`
+              .toLowerCase()
+              .replace(/\s+/g, " ")
+              .trim();
+            const autoLabels = [];
 
-            if (/\b(bug|error|fail|failure|broken|exception)\b/.test(normalized)) {
-              autoLabels.push("bug");
+            for (const [name, config] of Object.entries(labels)) {
+              if (config.pattern && config.pattern.test(normalized)) {
+                autoLabels.push(name);
+              }
             }
-            if (/\b(feature|enhancement|improvement|request)\b/.test(normalized)) {
-              autoLabels.push("enhancement");
-            }
-            if (/\b(question|how|help|why)\b/.test(normalized)) {
-              autoLabels.push("question");
+
+            if (autoLabels.length === 0) {
+              autoLabels.push("needs-triage");
             }
 
             await github.rest.issues.addLabels({
