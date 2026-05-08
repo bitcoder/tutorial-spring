@@ -1,0 +1,71 @@
+name: Clarify Unclear Issues
+
+on:
+  issues:
+    types: [opened, edited, reopened]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  request-clarification:
+    if: ${{ github.event.issue.pull_request == null }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ask for clarification when issue is unclear
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issue = context.payload.issue;
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const issue_number = issue.number;
+            const marker = '<!-- clarify-issue-bot -->';
+
+            const title = (issue.title || '').trim();
+            const body = (issue.body || '').trim();
+            const normalizedBody = body.replace(/\s+/g, ' ');
+
+            const unclear = title.length < 12 || normalizedBody.length < 40;
+
+            if (!unclear) {
+              core.info('Issue is clear enough, skipping.');
+              return;
+            }
+
+            const comments = await github.paginate(github.rest.issues.listComments, {
+              owner,
+              repo,
+              issue_number,
+              per_page: 100
+            });
+
+            const alreadyCommented = comments.some((comment) => {
+              return comment.body && comment.body.includes(marker);
+            });
+
+            if (alreadyCommented) {
+              core.info('Clarification already requested, skipping duplicate comment.');
+              return;
+            }
+
+            const commentBody = `${marker}
+            Thanks for opening this issue 🙌
+
+            To help us understand and resolve it quickly, could you please clarify:
+
+            - What behavior did you expect?
+            - What happened instead?
+            - Clear steps to reproduce
+            - Any relevant logs, screenshots, or error messages
+            - Environment details (OS, Java version, browser/client, etc.)
+
+            Once you add these details, we can investigate faster.`;
+
+            await github.rest.issues.createComment({
+              owner,
+              repo,
+              issue_number,
+              body: commentBody
+            });
