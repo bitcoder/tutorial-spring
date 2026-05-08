@@ -64,7 +64,6 @@ jobs:
 
             const normalized = `${issue.title}\n${issue.body ?? ""}`
               .toLowerCase()
-              .replace(/\s+/g, " ")
               .trim();
             const autoLabels = [];
 
@@ -85,9 +84,11 @@ jobs:
               labels: autoLabels
             });
 
-            await github.rest.issues.createComment({
-              owner,
-              repo,
-              issue_number,
-              body: `Thanks for opening this issue. It has been labeled as: ${autoLabels.join(", ")}. A maintainer will review it soon.`
-            });
+            if (context.payload.action === "opened") {
+              await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number,
+                body: `Thanks for opening this issue. It has been labeled as: ${autoLabels.join(", ")}. A maintainer will review it soon.`
+              });
+            }
