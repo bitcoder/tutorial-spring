@@ -15,6 +15,10 @@ jobs:
         # Checkout the repository to install dependencies (exp)
       - name: Checkout code
         uses: actions/checkout@v6.0.2
+      - name: Install gh-aw extension
+        uses: github/gh-aw-actions/setup-cli@b8068426813005612b960b5ab0b8bd2c27142323 # v0.71.5
+        with:
+          version: v0.71.5
       - name: Authenticate with Xray
         id: auth
         run: |
