@@ -55,9 +55,11 @@ jobs:
 
             if (/\b(bug|error|fail|failure|broken|exception)\b/.test(normalized)) {
               autoLabels.push("bug");
-            } else if (/\b(feature|enhancement|improvement|request)\b/.test(normalized)) {
+            }
+            if (/\b(feature|enhancement|improvement|request)\b/.test(normalized)) {
               autoLabels.push("enhancement");
-            } else if (/\b(question|how|help|why)\b/.test(normalized)) {
+            }
+            if (/\b(question|how|help|why)\b/.test(normalized)) {
               autoLabels.push("question");
             }
 
