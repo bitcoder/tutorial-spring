@@ -11,6 +11,7 @@
 - **Code Quality**: SonarCloud integration
 - **Test Management**: Xray for Jira Cloud
 - **Deployment**: Render.com (Docker-based)
+- **Code**: stored and managed on GitHub
 
 ## Maven Commands
 
