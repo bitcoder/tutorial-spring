@@ -9,11 +9,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import com.sergiofreire.xray.tutorials.springboot.boundary.UserDTO;
 import com.sergiofreire.xray.tutorials.springboot.data.User;
 import com.sergiofreire.xray.tutorials.springboot.data.UserRepository;
 
@@ -134,6 +136,52 @@ class UserRestControllerIT {
 
         List<User> found = repository.findAll();
         assertThat(found).hasSize(1);
+    }
+
+    @Test
+    @Requirement("ST-233")
+    void updateUserWithSuccess() {
+        UserDTO updateDTO = new UserDTO("Sergio Updated", "sergioupdated", "newpassword");
+        HttpEntity<UserDTO> request = new HttpEntity<>(updateDTO);
+        
+        ResponseEntity<User> response = restTemplate.exchange("/api/users/" + user1.getId(), HttpMethod.PUT, request, User.class);
+        
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody().getName()).isEqualTo("Sergio Updated");
+        assertThat(response.getBody().getUsername()).isEqualTo("sergioupdated");
+        assertThat(response.getBody().getId()).isEqualTo(user1.getId());
+        
+        User updatedUser = repository.findById(user1.getId()).orElse(null);
+        assertThat(updatedUser).isNotNull();
+        assertThat(updatedUser.getName()).isEqualTo("Sergio Updated");
+        assertThat(updatedUser.getUsername()).isEqualTo("sergioupdated");
+    }
+
+    @Test
+    @Requirement("ST-233")
+    void updateUserWithInvalidData() {
+        UserDTO updateDTO = new UserDTO("", "short", "newpassword");
+        HttpEntity<UserDTO> request = new HttpEntity<>(updateDTO);
+        
+        ResponseEntity<User> response = restTemplate.exchange("/api/users/" + user1.getId(), HttpMethod.PUT, request, User.class);
+        
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
+        
+        User originalUser = repository.findById(user1.getId()).orElse(null);
+        assertThat(originalUser).isNotNull();
+        assertThat(originalUser.getName()).isEqualTo("Sergio Freire");
+        assertThat(originalUser.getUsername()).isEqualTo("sergiofreire");
+    }
+
+    @Test
+    @Requirement("ST-233")
+    void updateUserNotFound() {
+        UserDTO updateDTO = new UserDTO("New Name", "newusername", "newpassword");
+        HttpEntity<UserDTO> request = new HttpEntity<>(updateDTO);
+        
+        ResponseEntity<User> response = restTemplate.exchange("/api/users/999", HttpMethod.PUT, request, User.class);
+        
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     private void createTempUser(String name, String username, String password) {

@@ -40,6 +40,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User updateUser(Long id, User updatedUser) {
+        User existingUser = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found for id: " + id));
+        
+        existingUser.setName(updatedUser.getName());
+        existingUser.setUsername(updatedUser.getUsername());
+        existingUser.setPassword(updatedUser.getPassword());
+        
+        return userRepository.save(existingUser);
+    }
+
+    @Override
     public void deleteUser(User user) {
         userRepository.delete(user);
     }
