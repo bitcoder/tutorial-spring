@@ -10,7 +10,8 @@ permissions: read-all
 
 safe-outputs:
     add-comment:
-
+    noop:
+        report-as-issue: false
 ---
 # Issue Clarifier
 
