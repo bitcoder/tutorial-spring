@@ -12,11 +12,15 @@ safe-outputs:
     report-as-issue: false
 mcp-servers:
   tavily:
-    command: npx
-    args: ["-y", "@tavily/mcp"]
-    env:
-      TAVILY_API_KEY: "${{ secrets.TAVILY_API_KEY }}"
-    allowed: ["search", "search_news"]
+    type: http
+    url: "https://mcp.tavily.com/mcp/"
+    headers:
+      Authorization: "Bearer ${{ secrets.TAVILY_API_KEY }}"
+    allowed: ["*"]
+network:
+  allowed:
+    - defaults
+    - "*.tavily.com"
 ---
 # Dummy aw
 
