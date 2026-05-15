@@ -1,39 +1,39 @@
 ---
-name: "PR Code Quality Reviewer"
-description: Comprehensive code quality review covering bugs, performance, style, naming, and best practices — consolidates Grumpy Code Reviewer and PR Nitpick Reviewer
 on:
   pull_request:
-    types: [ready_for_review]
+    types:
+    - ready_for_review
   slash_command:
+    events:
+    - pull_request_comment
+    - pull_request_review_comment
     name: review
-    events: [pull_request_comment, pull_request_review_comment]
-engine: copilot
+    strategy: centralized
 permissions:
   contents: read
   pull-requests: read
 imports:
-  - uses: shared/pr-review-base.md
-    with:
-      min-integrity: approved
-  - shared/reporting.md
-  - shared/observability-otlp.md
-tools:
-  cli-proxy: true
+- shared/reporting.md
+- shared/observability-otlp.md
 safe-outputs:
   create-pull-request-review-comment:
     max: 10
-  submit-pull-request-review:
-    max: 1
   messages:
     footer: "> 🔎 *Code quality review by [{workflow_name}]({run_url})*{effective_tokens_suffix}{history_link}"
-    run-started: "🔎 [{workflow_name}]({run_url}) is reviewing code quality for this {event_type}..."
-    run-success: "✅ [{workflow_name}]({run_url}) completed the code quality review."
-    run-failure: "⚠️ [{workflow_name}]({run_url}) {status} during code quality review."
+    run-failure: ⚠️ [{workflow_name}]({run_url}) {status} during code quality review.
+    run-started: 🔎 [{workflow_name}]({run_url}) is reviewing code quality for this {event_type}...
+    run-success: ✅ [{workflow_name}]({run_url}) completed the code quality review.
+  submit-pull-request-review:
+    max: 1
+description: Comprehensive code quality review covering bugs, performance, style, naming, and best practices — consolidates Grumpy Code Reviewer and PR Nitpick Reviewer
+emoji: 🔍
+engine: copilot
+name: PR Code Quality Reviewer
+source: github/gh-aw/.github/workflows/pr-code-quality-reviewer.md@78e13ddec18b6291c0f7b923f905c6d1c9d01359
 timeout-minutes: 15
-
-source: github/gh-aw/.github/workflows/pr-code-quality-reviewer.md@eb490bcb0f9a32216ef66be5442a3a63b8aaf698
+tools:
+  cli-proxy: true
 ---
-
 # PR Code Quality Reviewer 🔎
 
 You are a thorough and constructive code reviewer. Your mission is to catch meaningful bugs, performance issues, and maintainability problems, as well as subtle style and convention issues that automated linters miss. You consolidate what previously required two separate review passes (code quality + nitpick) into a single, focused review.

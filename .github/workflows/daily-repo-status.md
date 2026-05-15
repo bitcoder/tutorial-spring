@@ -31,10 +31,10 @@ safe-outputs:
     title-prefix: "[repo-status] "
     labels: [report, daily-status]
     close-older-issues: true
-source: githubnext/agentics/workflows/daily-repo-status.md@fc4ab36dedc44e2a1cdc195cecce262f06c81230
+source: githubnext/agentics/workflows/repo-status.md@main
 ---
 
-# Daily Repo Status
+# Repo Status
 
 Create an upbeat daily status report for the repo as a GitHub issue.
 
