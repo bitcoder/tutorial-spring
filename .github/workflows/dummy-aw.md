@@ -25,3 +25,4 @@ network:
 # Dummy aw
 
 Look at the www.cnn.com website using `tavily` and add a comment with the top 3 news, as a very brief enumerated list of items.
+Use "${{ steps.sanitized.outputs.text }}" as contenxt to filter out the relevant news; if empty, consider all news.
