@@ -14,6 +14,7 @@ network:
   allowed:
     - defaults
     - "*.tavily.com"
+    - "*.cloud.getxray.app"
 steps:
   - name: Authenticate with Xray
     id: auth
@@ -46,7 +47,7 @@ mcp-servers:
     env:
       ENDPOINT: "https://xray.cloud.getxray.app/api/v2/graphql"
       ALLOW_MUTATIONS: "true"
-      HEADERS: "{\"Authorization\":\"Bearer $XRAY_AUTH_TOKEN\"}"
+      HEADERS: "{\\\"Authorization\\\":\\\"Bearer $XRAY_AUTH_TOKEN\\\"}"
 
 ---
 # Dummy Coverage
