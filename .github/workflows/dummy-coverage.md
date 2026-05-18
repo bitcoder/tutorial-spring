@@ -15,12 +15,13 @@ network:
     - defaults
     - "*.tavily.com"
     - "*.cloud.getxray.app"
+strict: false
 steps:
   - name: Authenticate with Xray
     id: auth
     env:
-      XRAYCLOUD_CLIENT_ID: $\{\{ secrets.XRAYCLOUD_CLIENT_ID }}
-      XRAYCLOUD_CLIENT_SECRET: $\{\{ secrets.XRAYCLOUD_CLIENT_SECRET }}
+      XRAYCLOUD_CLIENT_ID: ${{ secrets.XRAYCLOUD_CLIENT_ID }}
+      XRAYCLOUD_CLIENT_SECRET: ${{ secrets.XRAYCLOUD_CLIENT_SECRET }}
     run: |
       RESPONSE=$(curl -s -X POST "https://xray.cloud.getxray.app/api/v2/authenticate" \
         -H "Content-Type: application/json" \
