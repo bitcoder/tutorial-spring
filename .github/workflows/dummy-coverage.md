@@ -24,10 +24,10 @@ steps:
     run: |
       RESPONSE=$(curl -s -X POST "https://xray.cloud.getxray.app/api/v2/authenticate" \
         -H "Content-Type: application/json" \
-        -d '{
-          "client_id": "$XRAYCLOUD_CLIENT_ID",
-          "client_secret": "$XRAYCLOUD_CLIENT_SECRET"
-        }')
+        -d "{
+          \"client_id\": \"$XRAYCLOUD_CLIENT_ID\", 
+          \"client_secret\": \"$XRAYCLOUD_CLIENT_SECRET\" 
+        }")
 
       # Xray returns token as a JSON string (quoted), so strip quotes
       TOKEN=$(echo $RESPONSE | tr -d '"')
