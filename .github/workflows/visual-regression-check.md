@@ -25,6 +25,7 @@ steps:
         sleep 2
       done
       curl -fsS "http://localhost:${SERVER_PORT}/" >/dev/null
+      sudo iptables -t nat -A OUTPUT -p tcp -d 127.0.0.1 --dport 80 -j REDIRECT --to-port ${SERVER_PORT}
 
 tools:
   playwright:
@@ -32,7 +33,7 @@ tools:
   bash:
     - "mvn *"
     - "playwright-cli *"
-    - "curl -fsS http://localhost:*"
+    - "curl -fsS http://localhost*"
 
 network:
   allowed:
@@ -49,11 +50,12 @@ safe-outputs:
   add-comment:
     max: 1
   noop:
+    report-as-issue: false
 ---
 
 # Visual Regression Check
 
-The dev server is running at http://localhost:8081/. Check for visual regressions
+The dev server is running at http://localhost/. Check for visual regressions
 on the home, getting-started, and reference pages across three viewports:
 
 - Mobile: 375×812
@@ -64,7 +66,7 @@ For each viewport, resize and screenshot:
 
 ```bash
 playwright-cli browser_resize --width 375 --height 812
-playwright-cli browser_navigate --url "http://localhost:8081/"
+playwright-cli browser_navigate --url "http://localhost/"
 playwright-cli browser_take_screenshot --filename /tmp/mobile-screenshot.png --full-page true
 ```
 
