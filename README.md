@@ -7,7 +7,6 @@
 
 
 
-
 This is a simple Spring Boot tutorial to showcase the CI flow:
 
 - make local changes & push them
