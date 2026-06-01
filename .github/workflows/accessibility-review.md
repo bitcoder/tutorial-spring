@@ -26,6 +26,7 @@ safe-outputs:
 
 tools:
   playwright:
+    mode: cli
   web-fetch:
   github:
     toolsets: [all]
@@ -44,6 +45,8 @@ steps:
       # including installing any necessary dependencies, and it should
       # start your app in the background (e.g., using `&` at the end of the command).
       echo "Building and running the app in background..."
+      mvn spring-boot:run &
+      sleep 10
 source: githubnext/agentics/workflows/accessibility-review.md@c02eadfca420f2b351f9fcaee883c507a63ca316
 ---
 
@@ -71,7 +74,7 @@ still contains a placeholder, then:
    d. Also instruct them to remove this section from the markdown. 
    e. Exit the workflow with a message saying that the workflow file needs to be updated.
 
-1. Use the Playwright MCP tool to browse to `localhost:3000`. Review the website for accessibility problems by navigating around, clicking
+1. Use the Playwright MCP tool to browse to `localhost:8080`. Review the website for accessibility problems by navigating around, clicking
   links, pressing keys, taking snapshots and/or screenshots to review, etc. using the appropriate Playwright MCP commands.
 
 2. Review the source code of the application to look for accessibility issues in the code.  Use the Grep, LS, Read, etc. tools.
