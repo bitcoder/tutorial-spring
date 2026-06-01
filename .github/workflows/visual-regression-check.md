@@ -29,7 +29,6 @@ steps:
 tools:
   playwright:
     mode: cli
-    version: "v1.60.0"
   bash:
     - "npm *"
     - "curl http://localhost:*"
