@@ -380,12 +380,13 @@ jobs:
         run: |-
           mvn -B -DskipTests package --file pom.xml
           echo "Running the app in background..."
+          export SERVER_PORT=8081
           mvn spring-boot:run &
-           for i in {1..60}; do
-             curl -fsS http://localhost:8080/ >/dev/null && break
-             sleep 2
-           done
-
+          for i in {1..60}; do
+            curl -fsS "http://localhost:${SERVER_PORT}/" >/dev/null && break
+            sleep 2
+          done
+          curl -fsS "http://localhost:${SERVER_PORT}/" >/dev/null
       - name: Configure Git credentials
         env:
           REPO_NAME: ${{ github.repository }}
