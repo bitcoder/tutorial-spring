@@ -28,6 +28,7 @@ tools:
   playwright:
     mode: cli
   web-fetch:
+  web-search:
   github:
     toolsets: [all]
 
@@ -39,14 +40,21 @@ steps:
     with:
       fetch-depth: 0
       persist-credentials: false
+  - name: Set up JDK
+    uses: actions/setup-java@v4
+    with:
+      java-version: '17'
+      distribution: 'temurin'
+      cache: maven
   - name: Build and run app in background
     run: |
-      # This step should set up the runtime environment for your app, 
-      # including installing any necessary dependencies, and it should
-      # start your app in the background (e.g., using `&` at the end of the command).
-      echo "Building and running the app in background..."
+      mvn -B -DskipTests package --file pom.xml
+      echo "Running the app in background..."
       mvn spring-boot:run &
-      sleep 10
+       for i in {1..60}; do
+         curl -fsS http://localhost:8080/ >/dev/null && break
+         sleep 2
+       done
 source: githubnext/agentics/workflows/accessibility-review.md@c02eadfca420f2b351f9fcaee883c507a63ca316
 ---
 
