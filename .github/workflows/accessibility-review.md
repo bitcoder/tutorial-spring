@@ -78,7 +78,7 @@ Steps:
 0. Read the markdown corresponding to the workflow file under `.github/workflows/accessibility-review.md`. 
 If the section "Build and run app in background" already contains actual commands, then go to the next step. If it 
 still contains a placeholder, then:  
-   a. Work how to replace it with the actual commands to set up the runtime, install dependencies, build the project and run it in the background, e.g., using `&` at the end of the command.
+   a. Work out how to replace it with the actual commands to set up the runtime, install dependencies, build the project and run it in the background, e.g., using `&` at the end of the command.
    b. Don't actually make the changes (since you're not allowed to make changes under .github/workflows), but rather create a discussion showing the exact changes that are needed to the workflow file. Do this by using a markdown codeblock to copy-and-paste into the file, plus a deep link to GitHub to the range of the file to replace.
    c. In the discussion body mention that the user must (1) make these changes manually and (2) then run "gh aw compile" to compile the workflow file using GitHub Agentic Workflows (https://github.com/github/gh-aw).
    d. Also instruct them to remove this section from the markdown. 
