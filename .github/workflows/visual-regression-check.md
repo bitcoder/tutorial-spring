@@ -30,8 +30,9 @@ tools:
   playwright:
     mode: cli
   bash:
-    - "npm *"
-    - "curl http://localhost:*"
+    - "mvn *"
+    - "playwright-cli *"
+    - "curl -fsS http://localhost:*"
 
 network:
   allowed:
