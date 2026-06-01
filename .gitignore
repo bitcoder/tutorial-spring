@@ -11,3 +11,4 @@ tmp_*
 update-xray-token.sh
 .claude/
 claude.sh
+.playwright-cli/
