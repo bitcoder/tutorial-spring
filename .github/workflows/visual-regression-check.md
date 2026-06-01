@@ -33,7 +33,7 @@ tools:
   bash:
     - "mvn *"
     - "playwright-cli *"
-    - "curl -fsS http://localhost*"
+    - "curl *"
 
 network:
   allowed:
