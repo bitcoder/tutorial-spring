@@ -84,7 +84,7 @@ still contains a placeholder, then:
    d. Also instruct them to remove this section from the markdown. 
    e. Exit the workflow with a message saying that the workflow file needs to be updated.
 
-1. Use the Playwright MCP tool to browse to `localhost:8080`. Review the website for accessibility problems by navigating around, clicking
+1. Use the Playwright MCP tool to browse to `localhost:8081`. Review the website for accessibility problems by navigating around, clicking
   links, pressing keys, taking snapshots and/or screenshots to review, etc. using the appropriate Playwright MCP commands.
 
 2. Review the source code of the application to look for accessibility issues in the code.  Use the Grep, LS, Read, etc. tools.
