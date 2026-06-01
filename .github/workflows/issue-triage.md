@@ -16,25 +16,19 @@ permissions: read-all
 network: defaults
 
 # # This workflow runs often, so you can use a small model to keep costs down.
-# engine:
-#   model: small
+engine:
+  model: small
 
 safe-outputs:
   add-labels:
     max: 5
   add-comment:
-<<<<<<< current (local changes)
-  noop:
-    report-as-issue: false
-||||||| base (original)
-=======
   set-issue-type:
     max: 1
   close-issue:
     target: "triggering"
     state-reason: "not_planned"
     max: 1
->>>>>>> new (upstream)
 
 tools:
   web-fetch:

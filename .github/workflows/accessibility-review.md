@@ -7,8 +7,12 @@ description: |
   continuously throughout the development cycle.
 
 on:
-  schedule: daily
+  schedule:
+    - cron: "0 9 15 * *"  # 15th of month at 09:00 UTC
   workflow_dispatch:
+  slash_command:
+    name: a11y-review
+  reaction: "eyes"
 
 permissions: read-all
 
