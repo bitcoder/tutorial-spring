@@ -30,10 +30,7 @@ steps:
 tools:
   playwright:
     mode: cli
-  bash:
-    - "mvn *"
-    - "playwright-cli *"
-    - "curl *"
+  bash: [":*"]
 
 network:
   allowed:
