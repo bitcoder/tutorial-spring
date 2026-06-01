@@ -50,11 +50,13 @@ steps:
     run: |
       mvn -B -DskipTests package --file pom.xml
       echo "Running the app in background..."
+      export SERVER_PORT=8081
       mvn spring-boot:run &
-       for i in {1..60}; do
-         curl -fsS http://localhost:8080/ >/dev/null && break
-         sleep 2
-       done
+      for i in {1..60}; do
+        curl -fsS "http://localhost:${SERVER_PORT}/" >/dev/null && break
+        sleep 2
+      done
+      curl -fsS "http://localhost:${SERVER_PORT}/" >/dev/null
 source: githubnext/agentics/workflows/accessibility-review.md@c02eadfca420f2b351f9fcaee883c507a63ca316
 ---
 
