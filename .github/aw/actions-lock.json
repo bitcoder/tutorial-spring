@@ -19,11 +19,6 @@
       "repo": "actions/setup-java",
       "version": "v4",
       "sha": "c1e323688fd81a25caa38c78aa6df2d33d3e20d9"
-    },
-    "github/gh-aw-actions/setup@v0.76.1": {
-      "repo": "github/gh-aw-actions/setup",
-      "version": "v0.76.1",
-      "sha": "46d564922b082d0db93244972e8005ea6904ee5f"
     }
   },
   "containers": {
