@@ -20,6 +20,11 @@
       "version": "v4",
       "sha": "c1e323688fd81a25caa38c78aa6df2d33d3e20d9"
     },
+    "github/gh-aw-actions/setup-cli@v0.77.5": {
+      "repo": "github/gh-aw-actions/setup-cli",
+      "version": "v0.77.5",
+      "sha": "3ea13c02d765410340d533515cb31a7eef2baaf0"
+    },
     "github/gh-aw-actions/setup@v0.77.5": {
       "repo": "github/gh-aw-actions/setup",
       "version": "v0.77.5",
