@@ -47,6 +47,7 @@ tools:
     - "sleep*"          # Wait between retries
     - "rm*"             # Cleanup temp files
     - "mkdir*"          # Create directories
+
 safe-outputs:
   upload-artifact:
     max-uploads: 3
@@ -60,9 +61,12 @@ safe-outputs:
 
 network:
   allowed:
+    - defaults
     - chrome
     - java
     - playwright
+    - github
+    - "tutorial-spring.onrender.com"
 
 imports:
   - uses: shared/daily-audit-base.md
@@ -91,7 +95,7 @@ pre-agent-steps:
       LOG_FILE="/tmp/gh-aw/agent/server-$EXPR_GITHUB_RUN_ID.log"
       PID_FILE="/tmp/gh-aw/agent/server-$EXPR_GITHUB_RUN_ID.pid"
       cd "$EXPR_GITHUB_WORKSPACE/"
-      export SERVER_PORT=8081
+      export SERVER_PORT=3000
       nohup mvn spring-boot:run > "$LOG_FILE" 2>&1 &
       PID=$!
       echo $PID > "$PID_FILE"
@@ -105,7 +109,7 @@ pre-agent-steps:
       LOG_FILE="/tmp/gh-aw/agent/server-$EXPR_GITHUB_RUN_ID.log"
       MAX_WAIT=135  # Maximum 135 seconds wait time
       WAITED=0
-      until curl -sf http://localhost:8081/ > /dev/null 2>&1; do
+      until curl -sf http://localhost:3000/ > /dev/null 2>&1; do
         # Check if the server process has already died
         if [ -f "$PID_FILE" ] && ! kill -0 "$(cat "$PID_FILE")" 2>/dev/null; then
           echo "::error::Server process died before becoming ready. Server log:"
@@ -121,7 +125,7 @@ pre-agent-steps:
         echo "Waiting for server... ($WAITED/${MAX_WAIT}s)"
         sleep 3
       done
-      echo "Server ready at http://localhost:8081/!"
+      echo "Server ready at http://localhost:3000/!"
 ---
 
 {{#runtime-import? .github/shared-instructions.md}}
@@ -153,11 +157,11 @@ Start the development server and perform comprehensive multi-device testing. Tes
 
 ## Step 1: Verify Server Availability
 
-The workflow pre-agent steps already installed docs dependencies and started the Astro dev server.
+The workflow pre-agent steps already installed dependencies and started the dev server.
 Quickly verify it is reachable before testing:
 
 ```bash
-curl -sf http://localhost:8081/ > /dev/null && echo "Docs server is ready"
+curl -sf http://localhost:3000/ > /dev/null && echo "Server is ready"
 ```
 
 ## Step 2: Device Configuration
@@ -174,7 +178,7 @@ Test these device types based on input `${{ inputs.devices }}`:
 
 Playwright is pre-installed as `@playwright/cli`. Use `playwright-cli <command>` in bash — no MCP tools or Docker container is involved:
 
-- ✅ **Correct**: `playwright-cli browser_navigate --url "http://localhost:8081/"`
+- ✅ **Correct**: `playwright-cli browser_navigate --url "http://localhost:3000/"`
 - ✅ **Correct**: Use `playwright-cli browser_run_code --code "async (page) => { ... }"` for custom Playwright code
 - ❌ **Incorrect**: Do NOT try to `require('playwright')` or create standalone Node.js scripts
 - ❌ **Incorrect**: Do NOT use `mcp__playwright__*` tool names — those are the deprecated MCP mode
@@ -186,7 +190,7 @@ The development server can take some time to load. Using the default `waitUntil:
 ```bash
 playwright-cli browser_run_code --code "async (page) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto('http://localhost:8081/', { waitUntil: 'domcontentloaded', timeout: 30000 });
+  await page.goto('http://localhost:3000/', { waitUntil: 'domcontentloaded', timeout: 30000 });
   return { url: page.url(), title: await page.title() };
 }"
 ```
@@ -195,7 +199,7 @@ playwright-cli browser_run_code --code "async (page) => {
 - ❌ **Do NOT use bridge IP detection** — that is only needed in the deprecated MCP mode
 
 For each device viewport, use playwright-cli to:
-- Set viewport size and navigate to `http://localhost:8081/`
+- Set viewport size and navigate to `http://localhost:3000/`
 - Take screenshots and run accessibility audits
 - Test interactions (navigation, search, buttons)
 - Check for layout issues (overflow, truncation, broken layouts)
