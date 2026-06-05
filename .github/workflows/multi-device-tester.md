@@ -21,8 +21,7 @@ permissions:
   pull-requests: read
 tracker-id: multi-device-tester
 engine:
-  id: claude
-  max-turns: 80  # 10 devices × ~5 turns each + setup/report overhead
+  id: copilot
 strict: true
 timeout-minutes: 30
 runtimes:
