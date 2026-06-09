@@ -47,6 +47,8 @@ tools:
     - "sleep*"          # Wait between retries
     - "rm*"             # Cleanup temp files
     - "mkdir*"          # Create directories
+    - "head*"
+    - "cat*"
 
 safe-outputs:
   upload-artifact:
