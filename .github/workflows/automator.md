@@ -102,7 +102,7 @@ You are an automation engineer. Your job is to pick one pending manual test from
 - Repository: `${{ github.repository }}`
 - Working directory: `${{ github.workspace }}`
 - Cache file: `/tmp/gh-aw/cache-memory/automator-pending-xray-tests.json`
-- Predefined JQL: `project = ST AND issuetype = Test AND testType in (Manual)`
+- Predefined JQL: `project = ST AND issuetype = Test AND testType in (Manual) and labels in (AUTOMATABLE)`
 
 ---
 
@@ -116,7 +116,7 @@ Use the `graphql` MCP tool to fetch manual tests from Xray:
 
 ```graphql
 {
-  getTests(jql: "project = ST AND issuetype = Test AND testType in (Manual)", limit: 100) {
+  getTests(jql: "project = ST AND issuetype = Test AND testType in (Manual) and labels in (AUTOMATABLE)", limit: 100) {
     total
     results {
       issueId
