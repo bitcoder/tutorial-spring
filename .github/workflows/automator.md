@@ -1,7 +1,7 @@
 ---
 description: |
-  Fetches manual tests from Xray using a predefined JQL, caches the list in a GitHub
-  issue, and automatically implements one automated JUnit 5 test per run following the
+  Fetches manual tests from Xray using a predefined JQL, caches the list in cache-memory,
+  and automatically implements one automated JUnit 5 test per run following the
   project conventions. Creates a pull request for each successfully automated test and
   updates the cache to track progress.
 
@@ -13,7 +13,6 @@ on:
 permissions:
   contents: read
   pull-requests: read
-  issues: read
 
 strict: false
 
@@ -65,6 +64,7 @@ network:
     - "*.cloud.getxray.app"
 
 tools:
+  cache-memory: true
   cli-proxy: true
   bash:
     - "mvn*"
@@ -86,12 +86,6 @@ safe-outputs:
   create-pull-request:
     title-prefix: "[automator] "
     labels: [automated-test, automator]
-  create-issue:
-    title-prefix: "[automator] "
-    labels: [automator-cache]
-    max: 1
-  update-issue:
-    body: true
   noop:
     report-as-issue: false
 
@@ -107,20 +101,16 @@ You are an automation engineer. Your job is to pick one pending manual test from
 
 - Repository: `${{ github.repository }}`
 - Working directory: `${{ github.workspace }}`
-- Cache issue label: `automator-cache`
+- Cache file: `/tmp/gh-aw/cache-memory/automator-pending-xray-tests.json`
 - Predefined JQL: `project = ST AND issuetype = Test AND testType in (Manual)`
 
 ---
 
 ## Step 1 – Load or Initialize the Cache
 
-The cache is stored as the body of a GitHub issue labelled `automator-cache`. Retrieve it:
+The cache is stored in `/tmp/gh-aw/cache-memory/automator-pending-xray-tests.json`.
 
-```bash
-gh issue list --label automator-cache --state all --json number,title,body --limit 1
-```
-
-### If no cache issue exists (first run):
+### If the cache file does not exist (first run):
 
 Use the `graphql` MCP tool to fetch manual tests from Xray:
 
@@ -161,13 +151,11 @@ Build a JSON structure:
 }
 ```
 
-Create the cache issue using `create-issue` with:
-- `title`: `Automator Cache`
-- `body`: the JSON above (formatted)
+Write the JSON above to `/tmp/gh-aw/cache-memory/automator-pending-xray-tests.json`.
 
-### If the cache issue exists:
+### If the cache file exists:
 
-Read its body and parse the JSON. If `fetched_at` is older than 7 days, re-fetch from Xray and merge: keep the existing `status` for tests already in the cache, add new tests as `"pending"`. Update the issue body with `update-issue`.
+Read the file and parse the JSON. If `fetched_at` is older than 7 days, re-fetch from Xray and merge: keep the existing `status` for tests already in the cache, add new tests as `"pending"`. Overwrite `/tmp/gh-aw/cache-memory/automator-pending-xray-tests.json` with the merged JSON.
 
 ---
 
@@ -192,7 +180,7 @@ A test is **clear enough to automate** when ALL of the following hold:
 Read the relevant source to confirm (e.g., `src/main/java/.../boundary/`, `services/`, `data/`).
 
 If the test is **NOT** automatable:
-1. Update the cache issue body via `update-issue`: set `"status": "skipped"`, add `"skip_reason": "<brief explanation>"` for the relevant test entry.
+1. Update `/tmp/gh-aw/cache-memory/automator-pending-xray-tests.json`: set `"status": "skipped"`, add `"skip_reason": "<brief explanation>"` for the relevant test entry, and overwrite the file.
 2. Call `noop` with message `"Skipped CURRENT_KEY: <reason>."` and stop.
 
 ---
@@ -245,7 +233,7 @@ cd ${{ github.workspace }} && mvn surefire:test -Dtest=<ClassName>
 **If the tests fail:**
 - Review the failure output and fix the implementation; retry up to **3 attempts** total.
 - After 3 failed attempts:
-  1. Update the cache issue body: set `"status": "skipped"`, `"skip_reason": "implementation_failed after 3 attempts"`.
+  1. Update `/tmp/gh-aw/cache-memory/automator-pending-xray-tests.json`: set `"status": "skipped"`, `"skip_reason": "implementation_failed after 3 attempts"`, and overwrite the file.
   2. Call `noop` with a brief explanation and stop.
 
 ---
@@ -260,6 +248,6 @@ Once all tests pass, call `create-pull-request` with:
 
 The gh-aw framework will diff your workspace changes, commit them to the branch, and open the PR automatically.
 
-After calling `create-pull-request`, update the cache issue body via `update-issue`:
+After calling `create-pull-request`, update `/tmp/gh-aw/cache-memory/automator-pending-xray-tests.json`:
 - Set the test entry's `"status"` to `"pr_created"`
 - Add `"pr_branch": "automator/CURRENT_KEY-automated-test"`

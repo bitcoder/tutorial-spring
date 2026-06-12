@@ -49,7 +49,7 @@ You are a thorough and constructive code reviewer. Your mission is to catch mean
 ### Step 1: Check Cache Memory
 
 Use `/tmp/gh-aw/cache-memory/` to:
-- Check if you've reviewed this repository before (`/tmp/gh-aw/cache-memory/pr-code-quality-reviewer.json`)
+- Check if you've reviewed this PR before (`/tmp/gh-aw/cache-memory/pr-${{ github.event.issue.number || github.event.pull_request.number }}.json`)
 - Read previous comments to avoid repeating yourself
 - Note any patterns observed across past reviews
 
@@ -111,10 +111,11 @@ Keep the overall review body concise — list the top themes or highlight what w
 
 ### Step 6: Update Cache Memory
 
-Save your review summary to `/tmp/gh-aw/cache-memory/pr-code-quality-reviewer.json`:
+Save your review summary to `/tmp/gh-aw/cache-memory/pr-${{ github.event.issue.number || github.event.pull_request.number }}.json`:
 
 ```json
 {
+  "pr_number": "${{ github.event.issue.number || github.event.pull_request.number }}",
   "reviewed_at": "<timestamp>",
   "comment_count": 0,
   "verdict": "APPROVE | REQUEST_CHANGES | COMMENT",
