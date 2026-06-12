@@ -5,6 +5,8 @@ description: |
   project conventions. Creates a pull request for each successfully automated test and
   updates the cache to track progress.
 
+name: Test Automator
+
 on:
   schedule:
     - cron: "0 8 * * 1"  # Weekly on Monday at 08:00 UTC
