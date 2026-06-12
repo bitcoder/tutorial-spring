@@ -18,11 +18,11 @@ tools:
 mcp-servers:
   atlassian-mcp-server:
     registry: https://api.mcp.github.com/v0.1/servers/com.atlassian/atlassian-mcp-server
-    url: https://mcp.atlassian.com/v1/mcp
+    url: https://mcp.atlassian.com/v1/mcp/authv2
     type: http
     allowed: ["*"]
     headers:
-      Authorization: "Bearer ${{ secrets.MCP_ATLASSIAN_API_KEY }}"
+      Authorization: "Basic ${{ secrets.MCP_ATLASSIAN_API_TOKEN_BASE64 }}"
 ---
 # Add info based on Jira
 
