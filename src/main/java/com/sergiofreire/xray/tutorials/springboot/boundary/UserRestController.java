@@ -37,6 +37,18 @@ public class UserRestController {
         return ResponseEntity.ok().body(user);
     }
 
+    @PutMapping("/users/{id}")
+    public ResponseEntity<User> updateUser(@PathVariable(value = "id") Long id, @RequestBody User userDetails)
+            throws ResourceNotFoundException {
+        User user = userService.getUserDetails(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found for id: " + id));
+        user.setName(userDetails.getName());
+        user.setUsername(userDetails.getUsername());
+        user.setPassword(userDetails.getPassword());
+        final User updatedUser = userService.save(user);
+        return ResponseEntity.ok(updatedUser);
+    }
+
     @GetMapping(path="/users" )
     public List<User> getAllUsers() {
         return userService.getAllUsers();

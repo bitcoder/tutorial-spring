@@ -26,7 +26,9 @@ jobs:
     strategy:
       matrix:
         java: [ '17', '21' ]
-        
+    permissions:
+      pull-requests: write
+
     steps:
     - uses: actions/checkout@v4
       with:
@@ -60,3 +62,15 @@ jobs:
         REVISON: ${{ github.ref_name}}
         TEST_ENVIRONMENT: java${{ matrix.java }}
       run: mvn -Dxray.clientId=${{ env.XRAYCLOUD_CLIENT_ID }} -Dxray.clientSecret=${{ env.XRAYCLOUD_CLIENT_SECRET }} -Dxray.testEnvironment=${{ env.TEST_ENVIRONMENT }} -Dxray.testPlanKey=${{ env.XRAYCLOUD_TEST_PLAN_KEY }} -Dxray.revision=${{ env.REVISON }} xray:import-results  
+    - name: add link to Test Plan having the Test Executions (one per Java version) on the build summary
+      run: |
+        echo "| Link |" >> $GITHUB_STEP_SUMMARY
+        echo "| --- |" >> $GITHUB_STEP_SUMMARY
+        echo "| Test Plan: [${{ vars.XRAYCLOUD_TEST_PLAN_KEY }}](${{ vars.JIRACLOUD_BASE_URL }}/browse/${{ vars.XRAYCLOUD_TEST_PLAN_KEY }}) | " >> $GITHUB_STEP_SUMMARY
+    - name: add link to Test Plan on the PR
+      uses: mshick/add-pr-comment@v2
+      if: github.event_name == 'pull_request'
+      with:
+        message: |
+          Test Plan: [${{ vars.XRAYCLOUD_TEST_PLAN_KEY }}](${{ vars.JIRACLOUD_BASE_URL }}/browse/${{ vars.XRAYCLOUD_TEST_PLAN_KEY }}) 
+  
