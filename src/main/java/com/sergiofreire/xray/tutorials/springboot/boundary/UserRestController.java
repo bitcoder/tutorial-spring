@@ -51,4 +51,20 @@ public class UserRestController {
         return ResponseEntity.ok().body(user); 
     }
 
+    @PutMapping("/users/{id}")
+    public ResponseEntity<User> updateUser(@PathVariable(value = "id") Long id,
+                                          @RequestBody UserDTO userDTO)
+            throws ResourceNotFoundException {
+        User user = userService.getUserDetails(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found for id: " + id));
+        
+        // Update only the allowed fields from DTO
+        user.setName(userDTO.getName());
+        user.setUsername(userDTO.getUsername());
+        user.setPassword(userDTO.getPassword());
+        
+        User updatedUser = userService.save(user);
+        return ResponseEntity.ok().body(updatedUser);
+    }
+
 }
