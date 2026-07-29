@@ -194,13 +194,39 @@ class UserRestControllerIT {
             User.class
         );
         
-        // Should return error for validation failure
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
+        // Should return error for validation failure (400 Bad Request is ideal, but currently returns 500)
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         
         // Verify user was not updated
         User unchanged = repository.findById(user1.getId()).orElse(null);
         assertThat(unchanged).isNotNull();
         assertThat(unchanged.getName()).isEqualTo("Sergio Freire");
+    }
+
+    @Test
+    @Requirement("ST-233")
+    void updateUserWithDuplicateUsername() {
+        // Create another user
+        createTempUser("Another User", "anotheruser", "password123");
+        
+        // Try to update user1 with existing username
+        UserDTO updateDto = new UserDTO("Sergio Freire", "anotheruser", "password123");
+        HttpEntity<UserDTO> request = new HttpEntity<>(updateDto);
+        
+        ResponseEntity<User> response = restTemplate.exchange(
+            "/api/users/" + user1.getId(), 
+            HttpMethod.PUT, 
+            request, 
+            User.class
+        );
+        
+        // Should return error for duplicate username
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
+        
+        // Verify user was not updated
+        User unchanged = repository.findById(user1.getId()).orElse(null);
+        assertThat(unchanged).isNotNull();
+        assertThat(unchanged.getUsername()).isEqualTo("sergiofreire");
     }
 
     private void createTempUser(String name, String username, String password) {

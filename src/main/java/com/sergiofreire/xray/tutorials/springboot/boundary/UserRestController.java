@@ -3,6 +3,7 @@ package com.sergiofreire.xray.tutorials.springboot.boundary;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 
 import com.sergiofreire.xray.tutorials.springboot.data.User;
 import com.sergiofreire.xray.tutorials.springboot.services.UserService;
@@ -53,10 +54,16 @@ public class UserRestController {
 
     @PutMapping("/users/{id}")
     public ResponseEntity<User> updateUser(@PathVariable(value = "id") Long id,
-                                          @RequestBody UserDTO userDTO)
+                                          @Valid @RequestBody UserDTO userDTO)
             throws ResourceNotFoundException {
         User user = userService.getUserDetails(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found for id: " + id));
+        
+        // Check username uniqueness if username is being changed
+        if (!userDTO.getUsername().equals(user.getUsername()) && 
+            userService.exists(userDTO.getUsername())) {
+            throw new IllegalArgumentException("Username already exists: " + userDTO.getUsername());
+        }
         
         // Update only the allowed fields from DTO
         user.setName(userDTO.getName());
