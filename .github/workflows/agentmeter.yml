@@ -1,0 +1,26 @@
+# .github/workflows/agentmeter.yml
+name: AgentMeter — Track Agent Costs
+
+on:
+  workflow_run:
+    workflows:
+      - "Issue Clarifier"
+      - "Agentic Triage"
+      # add all your gh-aw agent workflow names here
+    types:
+      - completed
+
+jobs:
+  track:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read        # required — lets the action gate on the conclusion job
+      contents: read
+      issues: write        # required — lets the action post cost comments
+      pull-requests: write
+    steps:
+      - uses: agentmeter/agentmeter-action@main
+        with:
+          api_key: ${{ secrets.AGENTMETER_API_KEY }}
+          status: ${{ github.event.workflow_run.conclusion }}
+          workflow_run_id: ${{ github.event.workflow_run.id }}
