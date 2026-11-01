@@ -30,7 +30,7 @@ public class UserRestController {
     }
 
     @GetMapping("/users/{id}")
-    public ResponseEntity<User> getCarById(@PathVariable(value = "id") Long id)
+    public ResponseEntity<User> getUserById(@PathVariable(value = "id") Long id)
             throws ResourceNotFoundException {
         User user = userService.getUserDetails(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found for id: " + id));
@@ -39,8 +39,8 @@ public class UserRestController {
 
     @GetMapping(path="/users" )
     public List<User> getAllUsers() {
-        // return userService.getAllUsers();
-         return null; // bug on purpose
+        return userService.getAllUsers();
+         // return null; // bug on purpose
     }
 
     @DeleteMapping("/users/{id}")
