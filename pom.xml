@@ -22,9 +22,9 @@
 		<junit-jupiter.version>5.14.1</junit-jupiter.version>
 		<xray-junit-extensions.version>0.9.0</xray-junit-extensions.version>
 		<xray-maven-plugin.version>0.9.0</xray-maven-plugin.version>
-		<maven-failsafe-plugin.version>3.5.4</maven-failsafe-plugin.version>
-		<maven-surefire-plugin.version>3.5.4</maven-surefire-plugin.version>
-		<jacoco.version>0.8.14</jacoco.version>
+		<maven-failsafe-plugin.version>3.6.0</maven-failsafe-plugin.version>
+		<maven-surefire-plugin.version>3.6.0</maven-surefire-plugin.version>
+		<jacoco.version>0.8.16</jacoco.version>
 		<unit.coverage.file>${project.build.directory}/jacoco-output/jacoco-unit-tests.exec</unit.coverage.file>
 		<it.coverage.file>${project.build.directory}/jacoco-output/jacoco-it-tests.exec</it.coverage.file>
 		<merged.coverage.file>${project.build.directory}/jacoco-output/merged.exec</merged.coverage.file>
