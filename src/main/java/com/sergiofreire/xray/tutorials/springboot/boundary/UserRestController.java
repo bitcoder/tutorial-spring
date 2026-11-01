@@ -46,12 +46,12 @@ public class UserRestController {
     }
 
     @DeleteMapping("/users/{id}")
-    public ResponseEntity<UserResponse> deleteUserById(@PathVariable(value = "id") Long id)
+    public ResponseEntity<Void> deleteUserById(@PathVariable(value = "id") Long id)
             throws ResourceNotFoundException {
         User user = userService.getUserDetails(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found for id: " + id));
         userService.deleteUser(user);
-        return ResponseEntity.ok().body(UserResponse.from(user));
+        return ResponseEntity.noContent().build();
     }
 
 }

@@ -135,9 +135,8 @@ class UserRestControllerIT {
     @Test
     @Requirement("ST-2")
     void deleteUserWithSuccess() {
-        ResponseEntity<UserResponse> response = restTemplate.exchange("/api/users/" + user1.getId(), HttpMethod.DELETE, null, UserResponse.class);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody().name()).isEqualTo("Sergio Freire");
+        ResponseEntity<Void> response = restTemplate.exchange("/api/users/" + user1.getId(), HttpMethod.DELETE, null, Void.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
 
         List<User> found = repository.findAll();
         assertThat(found).isEmpty();
