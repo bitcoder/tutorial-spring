@@ -42,8 +42,7 @@ public class UserRestController {
 
     @GetMapping(path = "/users")
     public List<UserResponse> getAllUsers() {
-       // return userService.getAllUsers().stream().map(UserResponse::from).toList();
-        return null; // bug on purpose
+       return userService.getAllUsers().stream().map(UserResponse::from).toList();
     }
 
     @DeleteMapping("/users/{id}")
